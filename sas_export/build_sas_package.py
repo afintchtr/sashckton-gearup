@@ -53,23 +53,38 @@ _T_HIGH_RISK = {schema["thresholds"]["high_risk"]!r}
 _GROUPS = {schema["groups"]!r}
 
 
-def score({args}):
-    "Output: EM_EVENTPROBABILITY, EM_CLASSIFICATION, band, quality"
-    row = {{{", ".join(f"{f['name']!r}: {f['name']}" for f in feats)}}}
+def _frame(row):
+    "Scalars (MAS row-by-row) or pandas Series (Model Manager batch) -> one-row-per-case DataFrame."
     d = {{}}
     for name in _FEATURES:
         v = row[name]
+        if not isinstance(v, pd.Series):
+            v = pd.Series([v])
+        v = v.reset_index(drop=True)
         if name in _CATEGORIES:
-            d[name] = pd.Categorical([v if v in _CATEGORIES[name] else None], categories=_CATEGORIES[name])
+            d[name] = pd.Categorical(v.where(v.isin(_CATEGORIES[name]), None), categories=_CATEGORIES[name])
         else:
-            d[name] = [np.nan if v is None else float(v)]
-    X = pd.DataFrame(d)
-    p = float(_model.predict_proba(X)[0, 1])
+            d[name] = pd.to_numeric(v, errors="coerce").astype(float)
+    return pd.DataFrame(d)
+
+
+def score({args}):
+    "Output: EM_EVENTPROBABILITY, EM_CLASSIFICATION, band, quality"
+    row = {{{", ".join(f"{f['name']!r}: {f['name']}" for f in feats)}}}
+    batch = isinstance({feats[0]["name"]}, pd.Series)
+    X = _frame(row)
+    p = _model.predict_proba(X)[:, 1].astype(float)
     cal = p * _NEG_KEEP / (p * _NEG_KEEP + (1 - p))
-    band = "high_risk" if cal >= _T_HIGH_RISK else ("suspicious" if cal >= _T_SUSPICIOUS else "genuine")
-    miss = X.isna().iloc[0]
-    low = bool(miss.mean() > 0.4 or any(miss[c].all() for c in _GROUPS.values()))
-    return cal, ("1" if band != "genuine" else "0"), band, ("low" if low else "ok")
+    band = np.where(cal >= _T_HIGH_RISK, "high_risk", np.where(cal >= _T_SUSPICIOUS, "suspicious", "genuine"))
+    miss = X.isna()
+    low = (miss.mean(axis=1) > 0.4).values
+    for c in _GROUPS.values():
+        low = low | miss[c].all(axis=1).values
+    cls = np.where(band != "genuine", "1", "0")
+    qual = np.where(low, "low", "ok")
+    if batch:
+        return pd.DataFrame(dict(EM_EVENTPROBABILITY=cal, EM_CLASSIFICATION=cls, band=band, quality=qual))
+    return float(cal[0]), str(cls[0]), str(band[0]), str(qual[0])
 '''
 open(f"{OUT}/score_{PFX}.py", "w").write(code)
 try:

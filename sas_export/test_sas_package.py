@@ -20,6 +20,11 @@ got = [mod.score(**{k: (None if pd.isna(v) else v) for k, v in row.items()}) for
 cal = np.array([g[0] for g in got]); d = np.abs(cal - ref.score.values)
 print(f"MAS score code vs bundle: max |diff| {d.max():.2e} | band agreement {(np.array([g[2] for g in got]) == ref.band.values).mean():.4f} | quality agreement {(np.array([g[3] for g in got]) == ref.quality.values).mean():.4f}")
 assert d.max() < 1e-5 and (np.array([g[2] for g in got]) == ref.band.values).all()
+# batch path: Model Manager passes whole columns as pandas Series
+bout = mod.score(**{c: X[c].where(X[c].notna(), None) for c in sc.features})
+bd = np.abs(bout.EM_EVENTPROBABILITY.values - cal).max()
+print(f"batch (Series) path vs row path: {len(bout)} rows | max |diff| {bd:.2e} | band same {(bout.band.values == np.array([g[2] for g in got])).all()} | quality same {(bout.quality.values == np.array([g[3] for g in got])).all()}")
+assert len(bout) == len(X) and bd < 1e-9 and (bout.band.values == np.array([g[2] for g in got])).all() and (bout.quality.values == np.array([g[3] for g in got])).all()
 # ---- (2) generated SAS DATA step == Python scorecard
 card = Scorecard.from_json(os.path.join(ROOT, "limit", "artifacts", "scorecard.json")); text = open(os.path.join(HERE, "scorecard", "scorecard_score.sas")).read()
 rules = {}
