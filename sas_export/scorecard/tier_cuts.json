@@ -1,0 +1,17 @@
+{
+ "score_cut": [
+  0.0,
+  611.8,
+  629.5,
+  648.0,
+  664.8
+ ],
+ "illustrative_cuts": [
+  0,
+  550,
+  620,
+  680,
+  740
+ ],
+ "note": "dikalibrasi ulang ke persentil populasi latih (P2/P25/P55/P85); T5 butuh review manual"
+}

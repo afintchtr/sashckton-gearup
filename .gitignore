@@ -1,0 +1,15 @@
+# environment and caches
+.venv/
+__pycache__/
+.ipynb_checkpoints/
+*.log
+# synthetic data is regenerated (see README, "Reproduce the data"); ~1.9 GB
+data/
+# generated at runtime
+serving/decision_log.jsonl
+serving/test_replay_scores.csv
+# superseded v1 files kept only locally
+archive/data_v1/*.csv
+
+# release artefacts, regenerated
+dist/

@@ -1,0 +1,25 @@
+{
+ "LR": {
+  "C": 0.26926469100861794,
+  "class_weight": null,
+  "transform": "standard"
+ },
+ "XGB": {
+  "n_estimators": 200,
+  "learning_rate": 0.08118441500491742,
+  "max_depth": 5,
+  "subsample": 0.7164916560792167,
+  "colsample_bytree": 0.8059264473611898,
+  "min_child_weight": 1.5187479226722465,
+  "reg_lambda": 0.4701469243560972,
+  "gamma": 1.8318092164684585
+ },
+ "HGB": {
+  "max_iter": 250,
+  "learning_rate": 0.18214744423753768,
+  "max_leaf_nodes": 50,
+  "min_samples_leaf": 128,
+  "l2_regularization": 0.004207988669606638,
+  "max_features": 0.5779972601681014
+ }
+}

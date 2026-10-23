@@ -1,0 +1,22 @@
+{
+ "max_abs_diff": 0.0,
+ "cases": {
+  "max": {
+   "bersih": 0.0,
+   "kategori_baru": 0.0,
+   "miss20": 0.0
+  },
+  "mean": {
+   "bersih": 0.0,
+   "kategori_baru": 0.0,
+   "miss20": 0.0
+  }
+ },
+ "latency_single_request": {
+  "n_requests": 200,
+  "p50_ms": 35.5,
+  "p95_ms": 44.7,
+  "max_ms": 72.0
+ },
+ "n_rows": 10500
+}

@@ -1,0 +1,365 @@
+{
+ "version": "1.1",
+ "model": "XGB|mask",
+ "created": "2026-10-23",
+ "neg_keep": 0.03,
+ "alert_rate": 0.001,
+ "protected_attributes_in_model": [],
+ "excluded_for_quirk": [
+  "tenure_months",
+  "hist_days"
+ ],
+ "thresholds": {
+  "suspicious": 0.00247490918263793,
+  "high_risk": 0.04664194583892822,
+  "note": "berlaku pada 'score' (terkoreksi prior); suspicious = presisi >= 5% di DEV-OOT, high_risk = presisi >= 50%"
+ },
+ "null_policy": "fitur kosong/tidak ada = tidak tersedia; kategori tidak dikenal = tidak tersedia",
+ "features": [
+  {
+   "name": "kyc_age_months",
+   "type": "numeric"
+  },
+  {
+   "name": "inflow_cv_90",
+   "type": "numeric"
+  },
+  {
+   "name": "regular_inflow_windows_90",
+   "type": "numeric"
+  },
+  {
+   "name": "inflow_30",
+   "type": "numeric"
+  },
+  {
+   "name": "min_balance_90",
+   "type": "numeric"
+  },
+  {
+   "name": "days_low_balance_90",
+   "type": "numeric"
+  },
+  {
+   "name": "balance",
+   "type": "numeric"
+  },
+  {
+   "name": "balance_to_income",
+   "type": "numeric"
+  },
+  {
+   "name": "out_30",
+   "type": "numeric"
+  },
+  {
+   "name": "out_7",
+   "type": "numeric"
+  },
+  {
+   "name": "avg_out_90",
+   "type": "numeric"
+  },
+  {
+   "name": "p95_out_30",
+   "type": "numeric"
+  },
+  {
+   "name": "p95_out_90",
+   "type": "numeric"
+  },
+  {
+   "name": "out_trend_30",
+   "type": "numeric"
+  },
+  {
+   "name": "out_to_income_30",
+   "type": "numeric"
+  },
+  {
+   "name": "n_out_7",
+   "type": "numeric"
+  },
+  {
+   "name": "new_payee_rate_30",
+   "type": "numeric"
+  },
+  {
+   "name": "new_payee_cnt_7",
+   "type": "numeric"
+  },
+  {
+   "name": "night_share_30",
+   "type": "numeric"
+  },
+  {
+   "name": "night_share_7",
+   "type": "numeric"
+  },
+  {
+   "name": "night_share_1",
+   "type": "numeric"
+  },
+  {
+   "name": "payee_concentration_90",
+   "type": "numeric"
+  },
+  {
+   "name": "distinct_payee_30",
+   "type": "numeric"
+  },
+  {
+   "name": "distinct_per_tx_30",
+   "type": "numeric"
+  },
+  {
+   "name": "device_cnt_90",
+   "type": "numeric"
+  },
+  {
+   "name": "mix_ecommerce_30",
+   "type": "numeric"
+  },
+  {
+   "name": "mix_food_30",
+   "type": "numeric"
+  },
+  {
+   "name": "mix_transport_30",
+   "type": "numeric"
+  },
+  {
+   "name": "mix_bills_30",
+   "type": "numeric"
+  },
+  {
+   "name": "mix_transfer_p2p_30",
+   "type": "numeric"
+  },
+  {
+   "name": "mix_ewallet_topup_30",
+   "type": "numeric"
+  },
+  {
+   "name": "mix_gambling_crypto_30",
+   "type": "numeric"
+  },
+  {
+   "name": "mix_shift_30_vs_prev60",
+   "type": "numeric"
+  },
+  {
+   "name": "new_device_7",
+   "type": "numeric"
+  },
+  {
+   "name": "cred_change_3",
+   "type": "numeric"
+  },
+  {
+   "name": "ftp_large_7",
+   "type": "numeric"
+  },
+  {
+   "name": "ftp_large_30",
+   "type": "numeric"
+  },
+  {
+   "name": "geo_mismatch_share_7",
+   "type": "numeric"
+  },
+  {
+   "name": "geo_mismatch_share_30",
+   "type": "numeric"
+  },
+  {
+   "name": "out_to_balance_max_3d",
+   "type": "numeric"
+  },
+  {
+   "name": "spike_ratio_7_vs_90",
+   "type": "numeric"
+  },
+  {
+   "name": "max_out_7_to_income",
+   "type": "numeric"
+  },
+  {
+   "name": "out_1",
+   "type": "numeric"
+  },
+  {
+   "name": "n_out_1",
+   "type": "numeric"
+  },
+  {
+   "name": "new_payee_1",
+   "type": "numeric"
+  },
+  {
+   "name": "distinct_payee_1",
+   "type": "numeric"
+  },
+  {
+   "name": "top_payee_share_1",
+   "type": "numeric"
+  },
+  {
+   "name": "ftp_large_1",
+   "type": "numeric"
+  },
+  {
+   "name": "geo_mismatch_share_1",
+   "type": "numeric"
+  },
+  {
+   "name": "new_device_1",
+   "type": "numeric"
+  },
+  {
+   "name": "cred_change_1",
+   "type": "numeric"
+  },
+  {
+   "name": "out_to_balance_1",
+   "type": "numeric"
+  },
+  {
+   "name": "out_1_vs_avg30",
+   "type": "numeric"
+  },
+  {
+   "name": "inflow_1",
+   "type": "numeric"
+  },
+  {
+   "name": "passthrough_7",
+   "type": "numeric"
+  },
+  {
+   "name": "out_to_in_30",
+   "type": "numeric"
+  },
+  {
+   "name": "mix_transfer_p2p_1",
+   "type": "numeric"
+  },
+  {
+   "name": "mix_ewallet_topup_1",
+   "type": "numeric"
+  },
+  {
+   "name": "mix_gambling_crypto_1",
+   "type": "numeric"
+  },
+  {
+   "name": "declared_income",
+   "type": "numeric"
+  },
+  {
+   "name": "occupation",
+   "type": "categorical",
+   "categories": [
+    "Driver online",
+    "Freelancer",
+    "Guru",
+    "Ibu rumah tangga",
+    "Karyawan swasta",
+    "Katering",
+    "Kontraktor",
+    "Kreator konten",
+    "Kurir",
+    "Mahasiswa",
+    "Manajer",
+    "PNS",
+    "Pedagang",
+    "Pedagang musiman",
+    "Pegawai BUMN",
+    "Pemilik usaha kecil",
+    "Pemilik warung",
+    "Pengusaha",
+    "Penjual pakaian",
+    "Profesional",
+    "Tenaga kesehatan",
+    "Wiraswasta"
+   ]
+  },
+  {
+   "name": "segment",
+   "type": "categorical",
+   "categories": [
+    "SME",
+    "gig",
+    "payroll",
+    "retail"
+   ]
+  },
+  {
+   "name": "shared_device_flag",
+   "type": "numeric"
+  }
+ ],
+ "groups": {
+  "device": [
+   "device_cnt_90",
+   "new_device_7",
+   "cred_change_3",
+   "new_device_1",
+   "cred_change_1"
+  ],
+  "geo": [
+   "geo_mismatch_share_7",
+   "geo_mismatch_share_30",
+   "geo_mismatch_share_1"
+  ],
+  "merchant": [
+   "mix_ecommerce_30",
+   "mix_food_30",
+   "mix_transport_30",
+   "mix_bills_30",
+   "mix_transfer_p2p_30",
+   "mix_ewallet_topup_30",
+   "mix_gambling_crypto_30",
+   "mix_shift_30_vs_prev60",
+   "mix_transfer_p2p_1",
+   "mix_ewallet_topup_1",
+   "mix_gambling_crypto_1"
+  ],
+  "payee": [
+   "new_payee_rate_30",
+   "new_payee_cnt_7",
+   "payee_concentration_90",
+   "distinct_payee_30",
+   "distinct_per_tx_30",
+   "ftp_large_7",
+   "ftp_large_30",
+   "new_payee_1",
+   "distinct_payee_1",
+   "top_payee_share_1",
+   "ftp_large_1"
+  ],
+  "malam": [
+   "night_share_30",
+   "night_share_7",
+   "night_share_1"
+  ],
+  "saldo": [
+   "min_balance_90",
+   "days_low_balance_90",
+   "balance",
+   "balance_to_income",
+   "out_to_income_30",
+   "out_to_balance_max_3d",
+   "out_to_balance_1",
+   "passthrough_7",
+   "out_to_in_30"
+  ],
+  "profil": [
+   "declared_income",
+   "shared_device_flag",
+   "occupation",
+   "segment",
+   "kyc_age_months"
+  ]
+ }
+}

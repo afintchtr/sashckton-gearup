@@ -1,0 +1,242 @@
+{
+ "offer": {
+  "customer_id": "C000074",
+  "as_of": "2026-08-15",
+  "action": "OFFER_INCREASE",
+  "tier_before": 2,
+  "tier_after": 2,
+  "cap_after_million": 25.0,
+  "offer": {
+   "to_tier": 3,
+   "to_cap_million": 50.0
+  },
+  "score_points": 632.1,
+  "reason_codes": [
+   "declared income (-37 pts)",
+   "unusual payee concentration (-33 pts)",
+   "unstable monthly inflow (-5 pts)"
+  ],
+  "forecast_peak_need_million": 37.9,
+  "ceiling_tier": 3,
+  "demand_tier": 4,
+  "gate_hits": [],
+  "fraud_band": "genuine",
+  "message": "Your daily transfer limit can rise to Rp50 million because of your stable income, no disputes and a growing transfer need. Accept? It takes effect 24 hours after you accept.",
+  "transparency": {
+   "factors": [
+    "scorecard points and reason codes",
+    "30-day peak-need forecast",
+    "fraud gate checks",
+    "tenure, regular inflow, disputes, KYC age"
+   ],
+   "how_to_object": "POST /limit/appeal (human review within 2 working days)"
+  }
+ },
+ "accept_day": {
+  "customer_id": "C000074",
+  "as_of": "2026-08-16",
+  "action": "KEEP",
+  "tier_before": 2,
+  "tier_after": 2,
+  "cap_after_million": 25.0,
+  "offer": {
+   "to_tier": 3,
+   "to_cap_million": 50.0
+  },
+  "score_points": 635.7,
+  "reason_codes": [
+   "declared income (-37 pts)",
+   "unusual payee concentration (-29 pts)",
+   "unstable monthly inflow (-5 pts)"
+  ],
+  "forecast_peak_need_million": 37.9,
+  "ceiling_tier": 3,
+  "demand_tier": 4,
+  "gate_hits": [],
+  "fraud_band": "genuine",
+  "message": "",
+  "transparency": {
+   "factors": [
+    "scorecard points and reason codes",
+    "30-day peak-need forecast",
+    "fraud gate checks",
+    "tenure, regular inflow, disputes, KYC age"
+   ],
+   "how_to_object": "POST /limit/appeal (human review within 2 working days)"
+  }
+ },
+ "applied": {
+  "customer_id": "C000074",
+  "as_of": "2026-08-17",
+  "action": "APPLY_INCREASE",
+  "tier_before": 2,
+  "tier_after": 3,
+  "cap_after_million": 50.0,
+  "offer": null,
+  "score_points": 627.2,
+  "reason_codes": [
+   "declared income (-37 pts)",
+   "unusual payee concentration (-29 pts)",
+   "unstable monthly inflow (-12 pts)"
+  ],
+  "forecast_peak_need_million": 37.7,
+  "ceiling_tier": 2,
+  "demand_tier": 4,
+  "gate_hits": [],
+  "fraud_band": "genuine",
+  "message": "Your daily transfer limit is now Rp50 million.",
+  "transparency": {
+   "factors": [
+    "scorecard points and reason codes",
+    "30-day peak-need forecast",
+    "fraud gate checks",
+    "tenure, regular inflow, disputes, KYC age"
+   ],
+   "how_to_object": "POST /limit/appeal (human review within 2 working days)"
+  }
+ },
+ "self_cap": {
+  "tier": 2,
+  "tier_since": 413,
+  "last_change": 413,
+  "consec_lower": 1,
+  "offer_to": 0,
+  "offer_day": -1,
+  "accepted_day": -1,
+  "dismissed_until": -1,
+  "self_cap": 2,
+  "pinned_until": -1
+ },
+ "appeal": {
+  "ticket": 1,
+  "status": "open",
+  "sla": "human review within 2 working days"
+ },
+ "state_after": {
+  "customer_id": "C000074",
+  "tier": 2,
+  "tier_since": 413,
+  "last_change": 413,
+  "consec_lower": 1,
+  "offer_to": 0,
+  "offer_day": -1,
+  "accepted_day": -1,
+  "dismissed_until": -1,
+  "self_cap": 2,
+  "pinned_until": -1,
+  "baseline_tier": 2,
+  "cap_million": 25.0
+ },
+ "hold_scam": {
+  "customer_id": "C006759",
+  "as_of": "2026-08-15 23:59:00",
+  "model_version": "XGB|mask@1.0",
+  "score": 0.8479676246643066,
+  "band": "high_risk",
+  "verdict": "HOLD",
+  "block_increase": true,
+  "hold": true,
+  "gate_hits": [
+   "FRAUD_SCORE_H",
+   "OPEN_ALERT_OR_DISPUTE"
+  ],
+  "reasons": [
+   "new_payee_rate_30=0.4252873659133911 (+4.27)",
+   "top_payee_share_1=0.8519502282142639 (+1.20)",
+   "mix_transfer_p2p_1=0.8519502282142639 (+1.19)"
+  ],
+  "quality": "ok",
+  "missing_share": 0.0,
+  "missing_groups": [],
+  "customer_message": "A transfer was held for your safety (model fraud score in high-risk band, fraud alert or dispute in the last 30 days). Confirm in the app after step-up authentication or call us.",
+  "tier": 2,
+  "cap": 25000000.0,
+  "latency_ms": 38.7
+ },
+ "gate_step_down": {
+  "customer_id": "C006759",
+  "as_of": "2026-08-16",
+  "action": "GATE_STEP_DOWN",
+  "tier_before": 3,
+  "tier_after": 2,
+  "cap_after_million": 25.0,
+  "offer": null,
+  "score_points": 659.6,
+  "reason_codes": [
+   "declared income (-37 pts)",
+   "unstable monthly inflow (-5 pts)",
+   "unusual payee concentration (-4 pts)"
+  ],
+  "forecast_peak_need_million": 38.7,
+  "ceiling_tier": 4,
+  "demand_tier": 4,
+  "gate_hits": [
+   "FRAUD_SCORE_H",
+   "OPEN_ALERT_OR_DISPUTE"
+  ],
+  "fraud_band": "high_risk",
+  "message": "For your safety your limit was lowered to Rp25 million after unusual activity. You can request a review and we will reply within 2 working days.",
+  "transparency": {
+   "factors": [
+    "scorecard points and reason codes",
+    "30-day peak-need forecast",
+    "fraud gate checks",
+    "tenure, regular inflow, disputes, KYC age"
+   ],
+   "how_to_object": "POST /limit/appeal (human review within 2 working days)"
+  }
+ },
+ "hold_ato": {
+  "customer_id": "C006313",
+  "as_of": "2026-08-21 23:59:00",
+  "model_version": "XGB|mask@1.0",
+  "score": 0.06880035996437073,
+  "band": "high_risk",
+  "verdict": "HOLD",
+  "block_increase": true,
+  "hold": true,
+  "gate_hits": [
+   "FRAUD_SCORE_H",
+   "NEW_DEVICE",
+   "CREDENTIAL_CHANGE"
+  ],
+  "reasons": [
+   "cred_change_3=1.0 (+2.76)",
+   "new_device_7=1.0 (+2.11)",
+   "mix_transfer_p2p_1=1.0 (+0.92)"
+  ],
+  "quality": "ok",
+  "missing_share": 0.0,
+  "missing_groups": [],
+  "customer_message": "A transfer was held for your safety (model fraud score in high-risk band, device first seen in the last 7 days). Confirm in the app after step-up authentication or call us.",
+  "tier": 1,
+  "cap": 10000000.0,
+  "latency_ms": 36.6
+ },
+ "hold_mule": {
+  "customer_id": "C003288",
+  "as_of": "2026-08-18 23:59:00",
+  "model_version": "XGB|mask@1.0",
+  "score": 0.2810148596763611,
+  "band": "high_risk",
+  "verdict": "HOLD",
+  "block_increase": true,
+  "hold": true,
+  "gate_hits": [
+   "FRAUD_SCORE_H",
+   "NEW_DEVICE"
+  ],
+  "reasons": [
+   "inflow_1=1552000.0 (+1.65)",
+   "new_payee_rate_30=0.3055555522441864 (+1.48)",
+   "occupation=Mahasiswa (+1.06)"
+  ],
+  "quality": "ok",
+  "missing_share": 0.0,
+  "missing_groups": [],
+  "customer_message": "A transfer was held for your safety (model fraud score in high-risk band, device first seen in the last 7 days). Confirm in the app after step-up authentication or call us.",
+  "tier": 2,
+  "cap": 25000000.0,
+  "latency_ms": 37.5
+ }
+}

@@ -1,0 +1,24 @@
+{
+ "champion": {
+  "config": "XGB|mask",
+  "model": "XGB",
+  "train_recipe": "mask",
+  "source_model_file": "models/baseline_XGB_mask.joblib",
+  "thr_suspicious": 0.002535842126235366,
+  "thr_high_risk": 0.05366142466664314,
+  "dev_oot_pr_auc_clean": 0.654,
+  "dev_oot_pr_auc_miss20": 0.506
+ },
+ "challenger": {
+  "config": "HGB|mask+grup+noise",
+  "model": "HGB",
+  "source_model_file": "models/baseline_HGB_mask+grup+noise.joblib"
+ },
+ "decision": {
+  "rule_outcome": "HGB|mask+grup+noise (seri dalam 1 SE, paling sederhana)",
+  "final": "XGB|mask",
+  "override": true,
+  "reason": "HGB hasil augmentasi tidak stabil antar seed (std PR-AUC miss20 0.138 vs 0.017 untuk XGB mask); DEV-OOT bersih XGB sedikit lebih tinggi (tidak signifikan); format export XGB lebih mudah",
+  "follow_up": "tambahkan kriteria stabilitas seed ke aturan seleksi pada iterasi berikutnya"
+ }
+}

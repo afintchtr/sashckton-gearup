@@ -1,0 +1,50 @@
+{
+ "scorecard_oot": {
+  "AUC": 0.5874987082194689,
+  "Gini": 0.17499741643893785,
+  "KS": 0.14789343167889935
+ },
+ "scorecard_train": {
+  "AUC": 0.5904411685107468,
+  "Gini": 0.1808823370214936,
+  "KS": 0.14877849343582328
+ },
+ "forecast": {
+  "coverage": {
+   "MVP: 1,2 x P95(90h)": 0.763,
+   "XGB kuantil 0,95": 0.9399,
+   "XGB kuantil 0,95 x 1,2": 0.9834
+  },
+  "pinball": {
+   "MVP: 1,2 x P95(90h)": 6910366.8921,
+   "XGB kuantil 0,95": 1369751.8808,
+   "XGB kuantil 0,95 x 1,2": 1426837.6833
+  },
+  "median_prakiraan_per_aktual": {
+   "MVP: 1,2 x P95(90h)": 2.5885,
+   "XGB kuantil 0,95": 2.6949,
+   "XGB kuantil 0,95 x 1,2": 3.2339
+  }
+ },
+ "protected_audit": {
+  "AUC": {
+   "tanpa usia (FINAL)": 0.5875,
+   "dengan usia (tidak dipakai)": 0.6322
+  },
+  "Gini": {
+   "tanpa usia (FINAL)": 0.175,
+   "dengan usia (tidak dipakai)": 0.2644
+  },
+  "KS": {
+   "tanpa usia (FINAL)": 14.7893,
+   "dengan usia (tidak dipakai)": 20.2849
+  }
+ },
+ "features": [
+  "payee_concentration_90",
+  "inflow_cv_90",
+  "passthrough_7",
+  "declared_income",
+  "distinct_per_tx_30"
+ ]
+}

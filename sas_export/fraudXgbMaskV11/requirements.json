@@ -1,0 +1,14 @@
+[
+    {
+        "step": "install numpy",
+        "command": "pip install numpy==2.2.6"
+    },
+    {
+        "step": "install pandas",
+        "command": "pip install pandas==2.3.3"
+    },
+    {
+        "step": "install xgboost",
+        "command": "pip install xgboost==3.2.0"
+    }
+]

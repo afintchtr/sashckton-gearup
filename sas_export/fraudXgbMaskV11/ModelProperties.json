@@ -1,0 +1,17 @@
+{
+    "name": "fraudXgbMaskV11",
+    "description": "Fraud risk score (XGBoost, mask-augmented), synthetic-data hackathon model. Input features are the 68 rolling features; null = unavailable.",
+    "scoreCodeType": "python",
+    "trainTable": "synthetic_customer_daily",
+    "trainCodeType": "Python",
+    "algorithm": "XGBoost",
+    "function": "Classification",
+    "targetVariable": "fraud_today",
+    "targetEvent": "1",
+    "targetLevel": "Binary",
+    "eventProbVar": "P_1",
+    "modeler": "Team Gear Up",
+    "tool": "Python 3",
+    "toolVersion": "3.10.12",
+    "properties": []
+}

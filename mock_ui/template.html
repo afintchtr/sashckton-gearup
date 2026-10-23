@@ -1,0 +1,171 @@
+<title>Customer Limit Journey</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* layout concept: a blue app-style hero, then a white rounded sheet holding journey picker + stepper + 'behind the screen' on the left and the phone on the right */
+:root{--blue:#2f7fe4;--blue-deep:#2565b8;--blue-ink:#1d4f94;--tint:#e8f1fc;--bg:#e8f1fc;--sheet:#ffffff;--card:#f3f6fa;--ink:#1b2432;--muted:#7a8aa0;--line:#e3e9f1;--green:#22a559;--green-soft:#dff4e7;--amber:#c98400;--amber-soft:#fdf0cf;--red:#d9423a;--red-soft:#fde5e3;--phone-edge:#10192a;--code:#f3f6fa;--code-ink:#243349;--font:"Plus Jakarta Sans",system-ui,sans-serif;--mono:"JetBrains Mono",ui-monospace,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1523;--sheet:#101c2e;--card:#18283e;--ink:#e7eef8;--muted:#8fa3bb;--line:#223650;--green:#46c27c;--green-soft:#123624;--amber:#f0b84a;--amber-soft:#3a2d10;--red:#ff7b72;--red-soft:#41201e;--tint:#16263d;--code:#0b1523;--code-ink:#bcd2ea;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0b1523;--sheet:#101c2e;--card:#18283e;--ink:#e7eef8;--muted:#8fa3bb;--line:#223650;--green:#46c27c;--green-soft:#123624;--amber:#f0b84a;--amber-soft:#3a2d10;--red:#ff7b72;--red-soft:#41201e;--tint:#16263d;--code:#0b1523;--code-ink:#bcd2ea;color-scheme:dark}
+*{box-sizing:border-box}body{background:var(--bg);color:var(--ink);font-family:var(--font);margin:0;padding-inline:0}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.hero{background:var(--blue);color:#fff;padding:1.6rem max(16px,env(safe-area-inset-right,0px)) 4.2rem max(16px,env(safe-area-inset-left,0px))}
+.hero-in{max-width:72rem;margin-inline:auto;display:flex;justify-content:space-between;gap:1rem;align-items:flex-start}
+.hero h1{margin:.25rem 0 .4rem;font-size:clamp(1.5rem,3.6vw,2.1rem);font-weight:800;letter-spacing:-.015em;line-height:1.15;text-wrap:balance}
+.hero p{margin:0;max-width:42rem;line-height:1.55;opacity:.92}
+.tag{display:inline-flex;gap:.4rem;align-items:center;font-size:.74rem;font-weight:700;background:rgba(255,255,255,.18);border-radius:99px;padding:.25rem .7rem}
+.themebtn{background:rgba(255,255,255,.18);color:#fff;border-radius:99px;padding:.4rem .9rem;font-weight:600;font-size:.82rem;flex:none}
+.sheet{background:var(--sheet);border-radius:2rem 2rem 0 0;margin-top:-2.2rem;padding:1.6rem max(16px,env(safe-area-inset-right,0px)) 2.5rem max(16px,env(safe-area-inset-left,0px));min-height:40rem}
+.grid{max-width:72rem;margin-inline:auto;display:grid;grid-template-columns:minmax(0,1fr) 23.5rem;gap:2.2rem;align-items:start}
+@media (max-width:62rem){.grid{grid-template-columns:minmax(0,1fr)}.phonecol{order:-1}}
+.tabs{display:flex;gap:1.3rem;overflow-x:auto;border-bottom:1px solid var(--line);margin-bottom:1.1rem;scrollbar-width:none}
+.tab{padding:.7rem 0;font-weight:600;color:var(--muted);white-space:nowrap;border-bottom:3px solid transparent;margin-bottom:-1px;font-size:.98rem}
+.tab[aria-pressed="true"]{color:var(--blue);border-color:var(--blue);font-weight:700}
+.stepper{display:flex;list-style:none;margin:0 0 1.2rem;padding:0;gap:0}
+.stepper li{flex:1;display:flex;flex-direction:column;align-items:center;gap:.35rem;position:relative;font-size:.78rem;font-weight:600;color:var(--muted);text-align:center;min-width:0}
+.stepper li::before{content:"";position:absolute;top:.85rem;left:-50%;width:100%;height:2px;background:var(--line);z-index:0}
+.stepper li:first-child::before{display:none}
+.stepper .n{position:relative;z-index:1;width:1.75rem;height:1.75rem;border-radius:50%;background:var(--card);color:var(--muted);display:grid;place-items:center;font-weight:800;font-size:.82rem;border:2px solid var(--line)}
+.stepper li.done .n{background:var(--green);border-color:var(--green);color:#fff}.stepper li.done::before,.stepper li.cur::before{background:var(--blue)}
+.stepper li.cur .n{background:var(--blue);border-color:var(--blue);color:#fff;box-shadow:0 0 0 4px color-mix(in srgb,var(--blue) 22%,transparent)}.stepper li.cur{color:var(--ink)}
+.explain{background:var(--card);border-radius:1.2rem;padding:1.15rem 1.2rem;margin-bottom:1rem}
+.explain h2{margin:0 0 .6rem;font-size:.82rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.api{display:inline-block;font-family:var(--mono);font-size:.8rem;background:var(--sheet);color:var(--blue);border:1px solid var(--line);padding:.25rem .6rem;border-radius:.6rem;font-weight:500}
+.what{margin:.7rem 0 .4rem;line-height:1.55;font-size:.97rem}
+.ref{font-size:.85rem;color:var(--muted);line-height:1.5}.ref b{color:var(--ink)}
+pre{margin:.7rem 0 0;background:var(--code);color:var(--code-ink);border:1px solid var(--line);font-family:var(--mono);font-size:.74rem;line-height:1.55;padding:.8rem .9rem;border-radius:.8rem;overflow-x:auto;white-space:pre-wrap;word-break:break-word}
+.nav{display:flex;gap:.6rem}.nbtn{border:1.5px solid var(--blue);color:var(--blue);padding:.6rem 1.1rem;border-radius:.8rem;font-weight:700}
+.nbtn.p{background:var(--blue);color:#fff}.nbtn[disabled]{opacity:.4;cursor:not-allowed}
+.disc{font-size:.82rem;color:var(--muted);line-height:1.55;margin-top:1.1rem}
+.phonecol{position:sticky;top:1rem}
+.phone{width:100%;max-width:22.5rem;margin-inline:auto;border-radius:2.4rem;background:var(--phone-edge);padding:.55rem;box-shadow:0 18px 40px rgba(16,25,42,.28)}
+.screen{background:var(--sheet);border-radius:1.9rem;height:42.5rem;overflow:hidden;display:flex;flex-direction:column;position:relative}
+/* ---------- app styling (phone) ---------- */
+.sb{display:flex;justify-content:space-between;align-items:center;font-size:.8rem;font-weight:700;padding:.75rem 1.4rem .3rem;color:#fff}
+.sb.dark{color:var(--ink)}
+.bat{display:inline-block;background:var(--green);color:#fff;border-radius:.35rem;padding:0 .35rem;font-size:.66rem;font-weight:800}
+.top{background:var(--blue);color:#fff;padding:0 1.1rem 1.1rem;flex:none}
+.bar{display:flex;align-items:center;justify-content:space-between;padding:.4rem 0 .9rem}
+.bar .t{font-weight:800;font-size:1.05rem}.rb{width:2rem;height:2rem;border-radius:50%;background:rgba(255,255,255,.22);display:grid;place-items:center;color:#fff;font-weight:800;font-size:.8rem}
+.hero2{text-align:center}.hero2 .lab{opacity:.9;font-size:.88rem}.hero2 .num{font-size:2.15rem;font-weight:800;letter-spacing:-.02em;margin:.1rem 0}
+.hero2 .num s{font-size:1rem;opacity:.65;font-weight:600;margin-left:.4rem}
+.pill{display:inline-block;font-size:.76rem;font-weight:800;border-radius:99px;padding:.22rem .75rem;background:var(--green-soft);color:var(--green)}
+.pill.warn{background:var(--amber-soft);color:var(--amber)}.pill.bad{background:var(--red-soft);color:var(--red)}
+.strip{margin-top:.8rem;background:var(--blue-deep);border-radius:.9rem;padding:.65rem .9rem;display:flex;justify-content:space-between;font-size:.82rem}
+.body{flex:1;background:var(--sheet);margin-top:-.2rem;border-radius:1.6rem 1.6rem 0 0;padding:1.1rem 1.1rem 1rem;overflow-y:auto;display:flex;flex-direction:column;gap:.8rem;position:relative}
+.body h3{margin:0;font-size:.95rem;font-weight:800}
+.c{background:var(--card);border-radius:1rem;padding:.85rem .95rem}
+.sub{color:var(--muted);font-size:.82rem;line-height:1.5}
+.ul{margin:.45rem 0 0;padding-left:1.05rem;font-size:.86rem;line-height:1.55}
+.btn{border-radius:.8rem;padding:.8rem 1rem;font-weight:700;width:100%;background:var(--blue);color:#fff;text-align:center}
+.btn.o{background:var(--sheet);color:var(--blue);border:1.5px solid var(--blue)}.btn.r{background:var(--red);color:#fff}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.tl{display:flex;flex-direction:column;gap:.7rem;font-size:.86rem}.tl div{display:flex;gap:.65rem;align-items:flex-start;line-height:1.4}
+.dot{width:.75rem;height:.75rem;border-radius:50%;background:var(--line);margin-top:.22rem;flex:none}.dot.on{background:var(--green)}
+.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem}.pad button{background:var(--card);border-radius:.9rem;padding:.75rem 0;font-weight:700;font-size:1.1rem}
+.pin{display:flex;gap:.65rem;justify-content:center;margin:.4rem 0}.pin i{width:.85rem;height:.85rem;border-radius:50%;border:2px solid var(--blue)}.pin i.f{background:var(--blue)}
+.tier{display:flex;justify-content:space-between;align-items:center;background:var(--card);border:1.5px solid transparent;border-radius:1rem;padding:.8rem .95rem;text-align:left;width:100%}
+.tier[aria-pressed="true"]{border-color:var(--blue);background:var(--tint)}.tier[disabled]{opacity:.5;cursor:not-allowed}
+.tabbar{flex:none;background:var(--sheet);border-top:1px solid var(--line);display:flex;justify-content:space-around;align-items:flex-end;padding:.4rem .2rem .7rem;position:relative}
+.tabbar div{display:flex;flex-direction:column;align-items:center;gap:.15rem;font-size:.64rem;font-weight:700;color:var(--muted);width:4rem}
+.tabbar .on{color:var(--blue)}
+.fab{width:3.4rem;height:3.4rem;border-radius:50%;background:var(--blue);display:grid;place-items:center;margin-top:-1.7rem;border:4px solid var(--sheet);color:#fff}
+.lock{background:linear-gradient(165deg,#3b8bf0 0%,#1f5fb8 55%,#143d77 100%);color:#fff;height:100%;display:flex;flex-direction:column}
+.lock .time{font-size:3.6rem;font-weight:300;text-align:center;line-height:1;margin-top:2.4rem}.lock .date{text-align:center;opacity:.85;font-size:.88rem;margin:.3rem 0 2rem}
+.notif{background:rgba(255,255,255,.2);backdrop-filter:blur(10px);border-radius:1.1rem;padding:.8rem .95rem;margin:0 1rem}
+.notif small{opacity:.8;display:flex;justify-content:space-between;font-weight:700;margin-bottom:.2rem;font-size:.7rem;letter-spacing:.04em}.notif p{margin:0;font-size:.88rem;line-height:1.45}
+svg{display:block}
+</style>
+<header class="hero"><div class="hero-in"><div><span class="tag">Concept mockup · synthetic data · no bank branding</span><h1>Customer limit journey</h1><p>Five customer experiences from the proposal (section 9), using the text and numbers our running service actually produced. Pick a journey and step through it. The panel on the left shows what happens behind the screen.</p></div><button class="themebtn" id="theme" aria-label="Switch theme">Theme</button></div></header>
+<div class="sheet"><div class="grid">
+<main>
+  <div class="tabs" id="tabs" role="group" aria-label="Choose a journey"></div>
+  <ol class="stepper" id="steps"></ol>
+  <section class="explain" id="behind" aria-live="polite"></section>
+  <div class="nav"><button class="nbtn" id="prev">Back</button><button class="nbtn p" id="next">Next step</button></div>
+  <p class="disc">This is not a real banking app. The message wording is produced by the service; amounts, reasons and ticket numbers come from real responses on synthetic customers. Customer-facing copy would be reviewed by the bank's legal and UX teams before use.</p>
+</main>
+<aside class="phonecol"><div class="phone"><div class="screen" id="screen"></div></div></aside>
+</div></div>
+<script>
+const DATA = /*DATA*/{};
+const $ = (s) => document.querySelector(s);
+const rp = (m) => "Rp" + (+m).toLocaleString("en-US", {maximumFractionDigits: 0}) + " million";
+const CAPS = [10, 25, 50, 100, 200];
+const IC = {
+  back: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>',
+  info: '<span style="font-style:italic;font-family:serif">i</span>',
+  home: '<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l9 8h-2.5v9h-4.5v-6h-4v6H5.5v-9H3z"/></svg>',
+  pie: '<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M11 3a9 9 0 109 9h-9z"/><path d="M13 2.2v8.8h8.8A9 9 0 0013 2.2z"/></svg>',
+  list: '<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="3" width="16" height="18" rx="3"/><path d="M8 9h8M8 13h8M8 17h5" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".9"/></svg>',
+  gear: '<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M10.5 2h3l.6 2.6 2 .9 2.3-1.4 2.1 2.1-1.4 2.3.9 2L22 10.5v3l-2.6.6-.9 2 1.4 2.3-2.1 2.1-2.3-1.4-2 .9-.6 2.6h-3l-.6-2.6-2-.9-2.3 1.4-2.1-2.1 1.4-2.3-.9-2L2 13.5v-3l2.6-.6.9-2-1.4-2.3L6.2 3.5l2.3 1.4 2-.9z"/><circle cx="12" cy="12" r="3.2" fill="#fff"/></svg>',
+  qr: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><path d="M14 14h3v3h-3zM19 19h1.5M17 20.5v0"/></svg>'
+};
+const GATE = {FRAUD_SCORE_H: "The pattern looks like a known scam type", OPEN_ALERT_OR_DISPUTE: "There was an alert or dispute on your account in the last 30 days", NEW_DEVICE: "A new device was used in the last 7 days", CREDENTIAL_CHANGE: "Your password, phone or email was changed recently", FIRST_PAYEE_LARGE: "A large amount to a first-time recipient", NIGHT_VELOCITY: "A lot of money moved late at night", OUTFLOW_BALANCE: "Most of your balance left in one day"};
+const FEAT = {new_payee_rate_30: "Many recent transfers went to new recipients", top_payee_share_1: "Most of today's money is going to one recipient", mix_transfer_p2p_1: "Almost all of today's activity is account-to-account transfers", new_device_7: "A new device was detected", cred_change_3: "Credentials were changed a moment ago", night_share_1: "Transactions at unusual night hours", out_1_vs_avg30: "Today's outflow is far above your usual", inflow_1: "A large deposit arrived today", passthrough_7: "Incoming money is being passed straight on"};
+const RC = {"declared income": "Declared income", "unusual payee concentration": "Unusual pattern of recipients", "unstable monthly inflow": "Monthly inflow not yet stable", "short time with the bank": "Short time as a customer", "identity (KYC) not refreshed recently": "Identity details due for a refresh"};
+const rc = (s) => { const k = s.replace(/ \(.*$/, ""); return RC[k] || k.charAt(0).toUpperCase() + k.slice(1); };
+const gate = (r) => (r.gate_hits || []).map((c) => GATE[c] || c);
+const feat = (r) => (r.reasons || []).slice(0, 2).map((s) => FEAT[s.split("=")[0]]).filter(Boolean);
+const json = (o) => "<pre>" + JSON.stringify(o, null, 1).replace(/</g, "&lt;") + "</pre>";
+const pick = (o, keys) => Object.fromEntries(keys.filter((k) => k in o).map((k) => [k, o[k]]));
+const O = DATA.offer, AP = DATA.applied, HS = DATA.hold_scam, GS = DATA.gate_step_down, SC = DATA.self_cap, AL = DATA.appeal;
+const sbar = (dark) => `<div class="sb ${dark ? "dark" : ""}"><span>9:41</span><span>5G&nbsp; <span class="bat">72</span></span></div>`;
+const tabbar = (on) => `<div class="tabbar"><div class="${on === "home" ? "on" : ""}">${IC.home}Home</div><div class="${on === "pf" ? "on" : ""}">${IC.pie}Portfolio</div><div><span class="fab">${IC.qr}</span></div><div class="${on === "hist" ? "on" : ""}">${IC.list}History</div><div class="${on === "set" ? "on" : ""}">${IC.gear}Settings</div></div>`;
+const shell = ({title, label, num, old, pill, pillCls = "", strip, body, tab = "home"}) => `${""}<div class="top">${sbar(false)}<div class="bar"><span class="rb">${IC.back}</span><span class="t">${title}</span><span class="rb">${IC.info}</span></div><div class="hero2"><div class="lab">${label}</div><div class="num">${num}${old ? `<s>${old}</s>` : ""}</div>${pill ? `<span class="pill ${pillCls}">${pill}</span>` : ""}</div>${strip ? `<div class="strip">${strip}</div>` : ""}</div><div class="body">${body}</div>${tabbar(tab)}`;
+const plain = ({title, body, tab = "set", sub}) => `<div class="top" style="padding-bottom:1.4rem">${sbar(false)}<div class="bar" style="padding-bottom:0;justify-content:center"><span class="t">${title}</span></div>${sub ? `<div class="hero2" style="margin-top:.5rem"><div class="lab">${sub}</div></div>` : ""}</div><div class="body">${body}</div>${tabbar(tab)}`;
+const lockscreen = (time, msg, title) => `<div class="lock"><div class="sb"><span></span><span>5G&nbsp; <span class="bat">72</span></span></div><div class="time">${time}</div><div class="date">Friday, 16 August</div><div class="notif"><small><span>YOUR BANK APP</span><span>now</span></small><p><b>${title}</b><br>${msg}</p></div></div>`;
+let S = {j: "offer", i: 0, pin: "", held: "wait", tier: 3};
+
+const J = {
+ offer: {name: "Limit increase offer", steps: [
+  {n: "Notification", screen: () => lockscreen("9:41", `Your daily transfer limit can rise to <b>${rp(O.offer.to_cap_million)}</b>. Open the app to accept.`, "A higher limit is available"),
+   api: ["POST /batch/daily", "The 02:00 batch decides, for every customer, whether to offer a higher limit. It combines a risk scorecard, a forecast of the customer's 30-day peak need and the fraud gate.", "Sections 4.3 and 8.1: daily evaluation, at most one tier up per cycle.", pick(O, ["action", "tier_before", "offer", "gate_hits", "fraud_band", "forecast_peak_need_million"])]},
+  {n: "Offer", screen: () => shell({title: "Transfer limit", label: "Daily transfer limit", num: rp(O.cap_after_million), pill: "Offer: " + rp(O.offer.to_cap_million), tab: "set", body: `<div class="c"><h3>Why you received this offer</h3><ul class="ul"><li>Your income has been steady</li><li>No open disputes</li><li>Your transfer needs are growing (peaks near Rp${Math.round(O.forecast_peak_need_million)} million a day)</li></ul></div><p class="sub">It takes effect 24 hours after you accept. You can lower it at any time.</p><button class="btn" data-act="accept">Accept offer</button><button class="btn o" data-act="later">Maybe later</button>`}),
+   api: ["POST /limit/evaluate → OFFER_INCREASE", "The service returns the offer, the original message text, and the scorecard points and reason codes behind the decision.", "Section 9.1: offer card. If dismissed, it is offered again after 30 days.", pick(O, ["action", "message", "offer", "score_points", "reason_codes"])]},
+  {n: "Accepted", screen: () => shell({title: "Transfer limit", label: "New daily limit", num: rp(O.offer.to_cap_million), pill: "Starts in 24 hours", pillCls: "warn", tab: "set", body: `<div class="c tl"><div><i class="dot on"></i>Offer accepted</div><div><i class="dot"></i>Security re-check when it takes effect</div><div><i class="dot"></i>New limit active</div></div><p class="sub">If we see suspicious activity before then, the increase is cancelled automatically to protect you.</p>`}),
+   api: ["POST /limit/accept", "Acceptance is recorded but the limit does not change the same day (action stays KEEP).", "Section 4.3: 24-hour delay, modelled on Brazil's PIX and Singapore rules.", pick(DATA.accept_day, ["action", "tier_before", "tier_after"])]},
+  {n: "Active", screen: () => shell({title: "Transfer limit", label: "Daily transfer limit", num: rp(AP.cap_after_million), pill: "Active", tab: "set", body: `<div class="c"><h3>${AP.message}</h3></div><p class="sub">You can lower this limit yourself at any time in Settings.</p><button class="btn o">See how your limit is decided</button>`}),
+   api: ["POST /limit/evaluate (next day) → APPLY_INCREASE", "The fraud gate is checked again at the moment the increase would apply. A hit would cancel it (CANCEL_OFFER).", "Section 6.3: every increase passes the fraud gate.", pick(AP, ["action", "tier_before", "tier_after", "cap_after_million", "gate_hits", "message"])]}]},
+ hold: {name: "Transfer on hold", steps: [
+  {n: "Notification", screen: () => lockscreen("23:12", "We paused a transfer to keep your money safe. Confirm in the app or contact us.", "Transfer on hold"),
+   api: ["POST /score → HOLD", "Rolling features from the customer's last 90 days are scored by the fraud model, then checked against the deterministic gate rules.", "Section 6.3: a high-risk score holds the transfer instantly, and the customer is always told.", pick(HS, ["score", "band", "verdict", "gate_hits"])]},
+  {n: "Why", screen: () => shell({title: "Security check", label: "Transfer status", num: "On hold", pill: "Awaiting your confirmation", pillCls: "bad", tab: "home", body: `<div class="c"><h3>We paused this transfer for a moment</h3><div class="sub" style="margin-top:.3rem">We want to be sure it is really you.</div></div><div class="c"><h3>What we noticed</h3><ul class="ul">${[...feat(HS), ...gate(HS)].map((x) => `<li>${x}</li>`).join("")}</ul></div><button class="btn" data-act="confirm">It's me, confirm</button><button class="btn r" data-act="notme">This isn't me</button>`}),
+   api: ["Reason codes from the model (SHAP) and the gate", "The three features that pushed the score up the most are turned into plain language for the customer.", "Section 6.1: reason codes on every decision.", pick(HS, ["reasons", "gate_hits", "customer_message", "quality"])]},
+  {n: "Verify", screen: () => S.held === "ok" ? shell({title: "Security check", label: "Transfer status", num: "Confirmed", pill: "Transfer released", tab: "home", body: `<div class="c"><h3>Thank you, your transfer goes ahead</h3><div class="sub" style="margin-top:.3rem">PIN verified. We will keep watching your account activity.</div></div>`}) : S.held === "block" ? shell({title: "Security check", label: "Account status", num: "Secured", pill: "Transfer cancelled", pillCls: "bad", tab: "home", body: `<div class="c"><h3>We secured your account</h3><div class="sub" style="margin-top:.3rem">The transfer was cancelled and our security team will contact you. You can also call customer care now.</div></div><button class="btn o">Call customer care</button>`}) : plain({title: "Enter your PIN", tab: "home", sub: "Step-up verification", body: `<div class="c" style="text-align:center"><b>Enter your 6-digit PIN</b><div class="pin">${[0,1,2,3,4,5].map((k) => `<i class="${k < S.pin.length ? "f" : ""}"></i>`).join("")}</div><div class="sub">Demo: type any six digits</div></div><div class="pad">${[1,2,3,4,5,6,7,8,9,"",0,"⌫"].map((k) => `<button data-act="key" data-k="${k}" ${k === "" ? "disabled" : ""}>${k}</button>`).join("")}</div>`}),
+   api: ["Step-up authentication (PIN or biometrics) in the app", "This step happens in the app; the service only receives the outcome. No service call is made in this mock.", "Section 6.3: the hold is released after step-up if the customer confirms.", {note: "PIN pad is local to the mock"}]}]},
+ down: {name: "Limit lowered", steps: [
+  {n: "Notice", screen: () => shell({title: "Transfer limit", label: "Daily transfer limit", num: rp(GS.cap_after_million), old: rp(CAPS[GS.tier_before - 1]), pill: "Lowered", pillCls: "warn", tab: "set", body: `<div class="c"><h3>Why this changed</h3><ul class="ul"><li>We saw unusual activity on your account</li>${gate(GS).map((x) => `<li>${x}</li>`).join("")}</ul></div><p class="sub">This never takes you below the limit your account started with. You can ask for a review and we reply within 2 working days.</p><button class="btn" data-act="appeal">Request a review</button>`}),
+   api: ["POST /limit/evaluate → GATE_STEP_DOWN", "When the fraud gate fires on live evidence, the limit drops one tier at once but never below the customer's original tier.", "Sections 4.3 and 4.4: fast step-down by the gate, always with reasons and a way to appeal.", pick(GS, ["action", "tier_before", "tier_after", "gate_hits", "fraud_band", "message"])]},
+  {n: "Appeal", screen: () => shell({title: "Review request", label: "Your ticket", num: "#" + AL.ticket, pill: "Request received", tab: "set", body: `<div class="c"><h3>A person will review this</h3><div class="sub" style="margin-top:.3rem">We reply within 2 working days. If the decision was wrong, a reviewer can pin your tier for six months.</div></div><div class="c tl"><div><i class="dot on"></i>Request received</div><div><i class="dot"></i>Reviewed by an officer</div><div><i class="dot"></i>Result sent to you</div></div>`}),
+   api: ["POST /limit/appeal, then POST /limit/review", "An appeal ticket is created; the reviewer can choose pin_tier to lock a tier for six months.", "Section 9.1: appeal with human review.", AL]}]},
+ self: {name: "Set my own limit", steps: [
+  {n: "Settings", screen: () => plain({title: "Transfer limit", sub: "Choose your daily transfer limit", body: `<div class="c"><div class="sub">Lower it any time and it applies immediately. Raising it again only happens through an offer from the bank.</div></div><div style="display:flex;flex-direction:column;gap:.5rem">${CAPS.map((c, k) => `<button class="tier" data-act="tier" data-k="${k + 1}" aria-pressed="${S.tier === k + 1}" ${k + 1 > 3 ? "disabled" : ""}><span><b>${rp(c)}</b></span><span class="sub">${k + 1 === 3 ? "current" : k + 1 > 3 ? "not available" : ""}</span></button>`).join("")}</div><p class="sub">${S.tier < 3 ? "Done. Your limit changed immediately, and new increase offers are paused until you raise it again." : "Pick a lower limit to reduce your exposure."}</p>`}),
+   api: ["POST /limit/self-cap", "The customer's chosen cap becomes the ceiling for any future offer, and the tier drops at once.", "Section 4.3: customers may lower their own limit instantly and raise it only through an offer.", {...SC, note: "tier is the value after the customer's change"}]}]},
+ why: {name: "How my limit is decided", steps: [
+  {n: "Transparency", screen: () => plain({title: "My limit", tab: "set", sub: rp(AP.cap_after_million), body: `<div class="c"><h3>What we look at</h3><ul class="ul"><li>Points based on your banking behaviour</li><li>Your expected transfer needs for the next 30 days</li><li>Security checks on each transaction</li><li>Time as a customer, regular income, disputes, and how recent your ID check is</li></ul></div><div class="c"><h3>What could help your limit grow</h3><ul class="ul">${AP.reason_codes.slice(0, 3).map((x) => `<li>${rc(x)}</li>`).join("")}</ul></div><p class="sub">We do not use your gender, age or region. Disagree? Ask for a person to review it. We reply within 2 working days.</p><button class="btn o" data-act="appeal2">Request a review</button>`}),
+   api: ["Transparency page, built from the /limit/evaluate response", "The factors and reason codes come from the scorecard. Protected attributes are not model inputs.", "Sections 9.1 and 6.4: every decision can be explained and challenged.", pick(AP, ["score_points", "reason_codes", "forecast_peak_need_million", "transparency"])]}]}
+};
+
+function render() {
+  const j = J[S.j], st = j.steps[S.i];
+  $("#tabs").innerHTML = Object.entries(J).map(([k, v]) => `<button class="tab" data-j="${k}" aria-pressed="${k === S.j}">${v.name}</button>`).join("");
+  $("#steps").innerHTML = j.steps.map((s, k) => `<li class="${k < S.i ? "done" : k === S.i ? "cur" : ""}"><span class="n">${k < S.i ? "✓" : k + 1}</span>${s.n}</li>`).join("");
+  $("#screen").innerHTML = st.screen();
+  $("#behind").innerHTML = `<h2>Behind the screen</h2><span class="api">${st.api[0]}</span><p class="what">${st.api[1]}</p><p class="ref"><b>Proposal:</b> ${st.api[2]}</p>${json(st.api[3])}`;
+  $("#prev").disabled = S.i === 0; $("#next").disabled = S.i === j.steps.length - 1;
+}
+document.addEventListener("click", (e) => {
+  const b = e.target.closest("button"); if (!b) return;
+  if (b.dataset.j) { S = {...S, j: b.dataset.j, i: 0, pin: "", held: "wait", tier: 3}; return render(); }
+  if (b.id === "prev") { S.i--; return render(); } if (b.id === "next") { S.i++; return render(); }
+  if (b.id === "theme") { const r = document.documentElement, d = r.dataset.theme === "dark" || (!r.dataset.theme && matchMedia("(prefers-color-scheme:dark)").matches); r.dataset.theme = d ? "light" : "dark"; return; }
+  const a = b.dataset.act; if (!a) return;
+  if (a === "accept") S.i = 2; else if (a === "later") S.i = 0;
+  else if (a === "confirm") { S.i = 2; S.held = "wait"; S.pin = ""; } else if (a === "notme") { S.i = 2; S.held = "block"; }
+  else if (a === "key") { const k = b.dataset.k; if (k === "⌫") S.pin = S.pin.slice(0, -1); else if (S.pin.length < 6) S.pin += k; if (S.pin.length === 6) S.held = "ok"; }
+  else if (a === "appeal") S.i = 1; else if (a === "appeal2") { S.j = "down"; S.i = 1; }
+  else if (a === "tier") S.tier = +b.dataset.k;
+  render();
+});
+render();
+</script>

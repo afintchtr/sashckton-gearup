@@ -1,0 +1,108 @@
+{
+ "features": [
+  "kyc_age_months",
+  "inflow_cv_90",
+  "regular_inflow_windows_90",
+  "inflow_30",
+  "min_balance_90",
+  "days_low_balance_90",
+  "balance",
+  "balance_to_income",
+  "out_30",
+  "out_7",
+  "avg_out_90",
+  "p95_out_30",
+  "p95_out_90",
+  "out_trend_30",
+  "out_to_income_30",
+  "n_out_7",
+  "new_payee_rate_30",
+  "new_payee_cnt_7",
+  "night_share_30",
+  "night_share_7",
+  "night_share_1",
+  "payee_concentration_90",
+  "distinct_payee_30",
+  "distinct_per_tx_30",
+  "device_cnt_90",
+  "mix_ecommerce_30",
+  "mix_food_30",
+  "mix_transport_30",
+  "mix_bills_30",
+  "mix_transfer_p2p_30",
+  "mix_ewallet_topup_30",
+  "mix_gambling_crypto_30",
+  "mix_shift_30_vs_prev60",
+  "new_device_7",
+  "cred_change_3",
+  "ftp_large_7",
+  "ftp_large_30",
+  "geo_mismatch_share_7",
+  "geo_mismatch_share_30",
+  "out_to_balance_max_3d",
+  "spike_ratio_7_vs_90",
+  "max_out_7_to_income",
+  "out_1",
+  "n_out_1",
+  "new_payee_1",
+  "distinct_payee_1",
+  "top_payee_share_1",
+  "ftp_large_1",
+  "geo_mismatch_share_1",
+  "new_device_1",
+  "cred_change_1",
+  "out_to_balance_1",
+  "out_1_vs_avg30",
+  "inflow_1",
+  "passthrough_7",
+  "out_to_in_30",
+  "mix_transfer_p2p_1",
+  "mix_ewallet_topup_1",
+  "mix_gambling_crypto_1",
+  "declared_income",
+  "occupation",
+  "segment",
+  "shared_device_flag"
+ ],
+ "protected": [
+  "gender",
+  "age_ord",
+  "region"
+ ],
+ "quirk": [
+  "tenure_months",
+  "hist_days"
+ ],
+ "audit": {
+  "PR-AUC bersih (rata-rata 3 seed)": {
+   "A: 68 fitur (model v1)": 0.6607,
+   "B: tanpa terproteksi (65)": 0.66192,
+   "C: tanpa terproteksi dan tenure/hist (63)": 0.66958
+  },
+  "std seed": {
+   "A: 68 fitur (model v1)": 0.01461,
+   "B: tanpa terproteksi (65)": 0.0109,
+   "C: tanpa terproteksi dan tenure/hist (63)": 0.00751
+  },
+  "20% hilang (rata-rata)": {
+   "A: 68 fitur (model v1)": 0.48561,
+   "B: tanpa terproteksi (65)": 0.47173,
+   "C: tanpa terproteksi dan tenure/hist (63)": 0.51093
+  },
+  "std seed (20% hilang)": {
+   "A: 68 fitur (model v1)": 0.0216,
+   "B: tanpa terproteksi (65)": 0.00705,
+   "C: tanpa terproteksi dan tenure/hist (63)": 0.00231
+  },
+  "jumlah fitur": {
+   "A: 68 fitur (model v1)": 68.0,
+   "B: tanpa terproteksi (65)": 65.0,
+   "C: tanpa terproteksi dan tenure/hist (63)": 63.0
+  }
+ },
+ "chosen": "C: tanpa terproteksi dan tenure/hist (63)",
+ "thresholds": {
+  "suspicious": 0.00247490918263793,
+  "high_risk": 0.04664194583892822
+ }
+}

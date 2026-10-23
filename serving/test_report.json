@@ -1,0 +1,19 @@
+{
+ "ingestion_unit_test": "passed",
+ "replay": {
+  "customer_days": 440,
+  "customers": 44,
+  "fraud_days": 21,
+  "spearman_api_vs_reference": 0.9394,
+  "band_agreement": 0.9773,
+  "fraud_days_flagged_api": 0.619,
+  "fraud_days_flagged_reference": 1.0,
+  "normal_days_flagged_api": 0.0072,
+  "normal_days_flagged_reference": 0.0095,
+  "verdicts": {
+   "ALLOW": 421,
+   "HOLD": 11,
+   "STEP_UP_AUTH": 8
+  }
+ }
+}

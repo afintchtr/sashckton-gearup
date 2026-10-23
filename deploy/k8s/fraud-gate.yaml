@@ -1,0 +1,44 @@
+# Apply: kubectl apply -f k8s/fraud-gate.yaml     (set the image to your registry first)
+apiVersion: v1
+kind: Namespace
+metadata: {name: fraud-gate}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata: {name: fraud-gate-data, namespace: fraud-gate}
+spec:
+  accessModes: [ReadWriteOnce]
+  resources: {requests: {storage: 1Gi}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: fraud-gate, namespace: fraud-gate, labels: {app: fraud-gate}}
+spec:
+  replicas: 1                      # SQLite feature store = single writer. Use Redis/Postgres in store.py before scaling out / adding an HPA.
+  selector: {matchLabels: {app: fraud-gate}}
+  template:
+    metadata:
+      labels: {app: fraud-gate}
+      annotations: {prometheus.io/scrape: "true", prometheus.io/port: "8080", prometheus.io/path: /metrics}
+    spec:
+      containers:
+        - name: api
+          image: REGISTRY/fraud-gate:1.0          # <- replace
+          ports: [{containerPort: 8080}]
+          env:
+            - {name: STORE_PATH, value: /data/store.db}
+            - {name: LOG_PATH, value: /data/decision_log.jsonl}
+          volumeMounts: [{name: data, mountPath: /data}]
+          readinessProbe: {httpGet: {path: /ready, port: 8080}, initialDelaySeconds: 5, periodSeconds: 10}
+          livenessProbe: {httpGet: {path: /health, port: 8080}, initialDelaySeconds: 10, periodSeconds: 20}
+          resources: {requests: {cpu: 250m, memory: 512Mi}, limits: {cpu: "1", memory: 1Gi}}
+      volumes:
+        - name: data
+          persistentVolumeClaim: {claimName: fraud-gate-data}
+---
+apiVersion: v1
+kind: Service
+metadata: {name: fraud-gate, namespace: fraud-gate}
+spec:
+  selector: {app: fraud-gate}
+  ports: [{port: 80, targetPort: 8080}]
