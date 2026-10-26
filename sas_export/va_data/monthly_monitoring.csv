@@ -1,0 +1,13 @@
+month,status,PR_AUC,KS,fraud_days,rows
+2025-10,In-sample (training months),0.9192,99.1996,250.0,40458.0
+2025-11,In-sample (training months),0.9084,99.0439,472.0,39302.0
+2025-12,In-sample (training months),0.9163,98.9077,634.0,40691.0
+2026-01,In-sample (training months),0.9309,98.9182,520.0,41110.0
+2026-02,In-sample (training months),0.9146,98.7338,443.0,37141.0
+2026-03,In-sample (training months),0.9228,98.3547,545.0,40369.0
+2026-04,In-sample (training months),0.9321,98.9646,503.0,39233.0
+2026-05,In-sample (training months),0.9175,98.0112,431.0,40653.0
+2026-06,In-sample (training months),0.9154,98.8682,324.0,40051.0
+2026-07,Out-of-sample,0.6495,96.2987,566.0,42747.0
+2026-08,Out-of-sample,0.7045,96.2346,451.0,43962.0
+2026-09,"Out-of-sample, small sample",0.7088,95.4174,49.0,43090.0

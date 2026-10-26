@@ -1,0 +1,4 @@
+method,coverage,pinball_loss,median_forecast_over_actual
+A. MVP rule: 1.2 x P95 (90 days),0.763,6910366.8921,2.5885
+B. XGBoost quantile 0.95,0.9399,1369751.8808,2.6949
+C. XGBoost quantile 0.95 x 1.2,0.9834,1426837.6833,3.2339

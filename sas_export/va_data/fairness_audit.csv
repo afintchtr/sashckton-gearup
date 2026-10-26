@@ -1,0 +1,20 @@
+group_type,group,flag_rate,recall,n_fraud_days
+gender,F,0.00098,0.86118,1131
+gender,M,0.00103,0.84924,922
+age_ord,0,0.00124,0.86473,584
+age_ord,1,0.00104,0.85123,652
+age_ord,2,0.00095,0.84404,327
+age_ord,3,0.00085,0.85283,265
+age_ord,4,0.00094,0.86667,225
+region,Bali,0.00121,0.92157,51
+region,Banten,0.00103,0.87407,135
+region,DI Yogyakarta,0.00102,0.83607,61
+region,DKI Jakarta,0.00113,0.85274,292
+region,Jawa Barat,0.00111,0.88372,387
+region,Jawa Tengah,0.00088,0.88966,290
+region,Jawa Timur,0.0007,0.7931,261
+region,Kalimantan Timur,0.0012,0.78218,101
+region,Lampung,0.0009,0.82456,57
+region,Sulawesi Selatan,0.00112,0.87821,156
+region,Sumatera Selatan,0.00099,0.86842,76
+region,Sumatera Utara,0.0011,0.83871,186

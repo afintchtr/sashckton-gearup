@@ -1,0 +1,13 @@
+model,metric,value
+"v1.1 (63 fitur, bundel)",PR_AUC,0.7335
+"v1 (68 fitur, bundel)",PR_AUC,0.7521
+Aturan gate saja,PR_AUC,0.0076
+"v1.1 (63 fitur, bundel)",ROC_AUC,0.9985
+"v1 (68 fitur, bundel)",ROC_AUC,0.9985
+Aturan gate saja,ROC_AUC,0.8431
+"v1.1 (63 fitur, bundel)",recall_at_alert,0.8558
+"v1 (68 fitur, bundel)",recall_at_alert,0.8617
+Aturan gate saja,recall_at_alert,0.0497
+"v1.1 (63 fitur, bundel)",precision_at_alert,0.2721
+"v1 (68 fitur, bundel)",precision_at_alert,0.2749
+Aturan gate saja,precision_at_alert,0.0158

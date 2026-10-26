@@ -13,3 +13,6 @@ archive/data_v1/*.csv
 
 # release artefacts, regenerated
 dist/
+
+# 20 MB lab-evidence sample, regenerate with sas_export/build_lab_sample.py (manifest is kept)
+sas_export/lab_evidence/*.csv

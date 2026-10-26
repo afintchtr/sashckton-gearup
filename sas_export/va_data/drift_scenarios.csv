@@ -1,0 +1,4 @@
+scenario,score_psi,ks_drop_points,pr_auc_relative_drop,decision_proposal_only,decision_with_extra_triggers
+A. Payee source down (30% of rows),0.03275756246212032,1.3696979665680686,0.1448238154777734,No action,INVESTIGATE DATA PIPELINE
+B. Behaviour shift (Lebaran-like),0.23393458974042053,2.0467395837063407,0.1797271095667649,No action,REVIEW
+C. Small 5% change,0.002778566948422854,-0.03931446807257544,0.011259101988706532,No action,OK

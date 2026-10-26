@@ -1,0 +1,7 @@
+measure_type,band,band_order,share
+Traffic,genuine,1,0.9953299760818481
+Traffic,suspicious,2,0.004209999926388264
+Traffic,high_risk,3,0.0004600000102072954
+Fraud caught,genuine,1,0.06283000111579895
+Fraud caught,suspicious,2,0.1602499932050705
+Fraud caught,high_risk,3,0.7769100069999695

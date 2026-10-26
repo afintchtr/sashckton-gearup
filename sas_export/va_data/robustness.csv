@@ -1,0 +1,11 @@
+scenario,model,PR_AUC,scenario_order
+Clean,v1 (68 features),0.7521,1
+Clean,v1.1 (63 features),0.7335,1
+20% missing,v1 (68 features),0.5821,2
+20% missing,v1.1 (63 features),0.5576,2
+No payee data,v1 (68 features),0.5018,3
+No payee data,v1.1 (63 features),0.4659,3
+15% noise,v1 (68 features),0.4675,4
+15% noise,v1.1 (63 features),0.4623,4
+20% missing + 15% noise,v1 (68 features),0.3198,5
+20% missing + 15% noise,v1.1 (63 features),0.3354,5

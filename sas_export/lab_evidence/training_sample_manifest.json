@@ -1,0 +1,17 @@
+{
+ "file": "training_sample_20mb.csv",
+ "source": "data/dev/daydetect.parquet (training table, v1.1)",
+ "rows": 42395,
+ "size_mb": 19.95,
+ "seed": 7,
+ "fraud_share_in_sample": 0.1224,
+ "fraud_share_in_full_table": 0.01061,
+ "customers": 26132,
+ "date_range": [
+  "2025-10-01",
+  "2026-09-30"
+ ],
+ "model_input_columns": 63,
+ "sha256": "5fe1cb7e82bff5d2329174b1d60dde5263735075ad62fcc0a3100aaf41ccbe7d",
+ "note": "Stratified, NOT representative of the base rate (fraud and borderline rows are oversampled). Synthetic data. Gender/age_ord/region are audit columns, not model inputs."
+}
