@@ -1,0 +1,86 @@
+name,role,type,description
+kyc_age_months,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+inflow_cv_90,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+regular_inflow_windows_90,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+inflow_30,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+min_balance_90,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+days_low_balance_90,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+balance,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+balance_to_income,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+out_30,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+out_7,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+avg_out_90,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+p95_out_30,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+p95_out_90,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+out_trend_30,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+out_to_income_30,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+n_out_7,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+new_payee_rate_30,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+new_payee_cnt_7,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+night_share_30,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+night_share_7,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+night_share_1,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+payee_concentration_90,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+distinct_payee_30,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+distinct_per_tx_30,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+device_cnt_90,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+mix_ecommerce_30,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+mix_food_30,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+mix_transport_30,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+mix_bills_30,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+mix_transfer_p2p_30,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+mix_ewallet_topup_30,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+mix_gambling_crypto_30,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+mix_shift_30_vs_prev60,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+new_device_7,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+cred_change_3,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+ftp_large_7,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+ftp_large_30,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+geo_mismatch_share_7,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+geo_mismatch_share_30,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+out_to_balance_max_3d,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+spike_ratio_7_vs_90,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+max_out_7_to_income,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+out_1,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+n_out_1,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+new_payee_1,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+distinct_payee_1,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+top_payee_share_1,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+ftp_large_1,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+geo_mismatch_share_1,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+new_device_1,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+cred_change_1,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+out_to_balance_1,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+out_1_vs_avg30,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+inflow_1,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+passthrough_7,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+out_to_in_30,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+mix_transfer_p2p_1,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+mix_ewallet_topup_1,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+mix_gambling_crypto_1,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+declared_income,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+occupation,input,String,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+segment,input,String,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+shared_device_flag,input,Decimal,"model feature (63), see docs/FEATURES_AND_EXPLAINABILITY.md"
+daily_cap,input,Decimal,Daily transfer cap of the customer's current tier (Rp)
+ftp_large_today,input,Integer,Transfers today to a first-time payee with amount above 50% of daily_cap
+night_outflow_today,input,Decimal,Outflow today between 22:00 and 05:00 (Rp)
+outflow_today,input,Decimal,Total outflow today (Rp)
+alerts_30,input,Integer,Fraud alerts in the last 30 days
+disputes_30,input,Integer,Disputes in the last 30 days
+EM_EVENTPROBABILITY,output of model node,Decimal,calibrated fraud probability
+EM_CLASSIFICATION,output of model node,String,"""1"" when band is not genuine"
+band,output of model node,String,genuine | suspicious | high_risk
+quality,output of model node,String,ok | low (many features unavailable)
+gate_hold,output of rule set 1,Integer,1 = hold
+gate_step_up,output of rule set 1,Integer,1 = step-up authentication
+gate_block,output of rule set 1,Integer,1 = block limit increase
+hit_fraud_score_h,output of rule set 1,Integer,rule G1 fired
+hit_new_device,output of rule set 1,Integer,rule G2 fired
+hit_credential_change,output of rule set 1,Integer,rule G3 fired
+hit_first_payee_large,output of rule set 1,Integer,rule G4 fired
+hit_night_velocity,output of rule set 1,Integer,rule G5 fired
+hit_outflow_balance,output of rule set 1,Integer,rule G6 fired
+hit_open_alert_or_dispute,output of rule set 1,Integer,rule G7 fired
+verdict,output of rule set 2,String,ALLOW | STEP_UP_AUTH | HOLD
+block_increase,output of flow,Integer,gate_block = 1 OR band <> genuine

@@ -1,0 +1,8 @@
+rule,name,condition,then_hit,gate_hold,gate_step_up,gate_block
+G1,FRAUD_SCORE_H,"band = ""high_risk""",hit_fraud_score_h = 1,1,0,1
+G2,NEW_DEVICE,new_device_7 > 0,hit_new_device = 1,0,0,1
+G3,CREDENTIAL_CHANGE,cred_change_3 > 0,hit_credential_change = 1,0,0,1
+G4,FIRST_PAYEE_LARGE,ftp_large_today > 0,hit_first_payee_large = 1,0,1,1
+G5,NIGHT_VELOCITY,night_outflow_today > 0.3 * daily_cap,hit_night_velocity = 1,0,1,1
+G6,OUTFLOW_BALANCE,(balance + outflow_today) > 50000000 AND outflow_today > 0.5 * (balance + outflow_today),hit_outflow_balance = 1,0,1,1
+G7,OPEN_ALERT_OR_DISPUTE,alerts_30 > 0 OR disputes_30 > 0,hit_open_alert_or_dispute = 1,0,0,1

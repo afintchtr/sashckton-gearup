@@ -1,0 +1,4 @@
+order,rule,condition,then_verdict
+1,V1,"gate_hold = 1 OR band = ""high_risk""",HOLD
+2,V2,"gate_step_up = 1 OR band = ""suspicious""",STEP_UP_AUTH
+3,V3,otherwise,ALLOW

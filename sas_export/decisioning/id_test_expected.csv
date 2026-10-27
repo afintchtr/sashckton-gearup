@@ -1,0 +1,44 @@
+case_id,scenario,EM_EVENTPROBABILITY,EM_CLASSIFICATION,band,quality,hit_fraud_score_h,hit_new_device,hit_credential_change,hit_first_payee_large,hit_night_velocity,hit_outflow_balance,hit_open_alert_or_dispute,gate_hold,gate_step_up,gate_block,verdict,block_increase
+case_01,"validation case, no context signals",0.026277262,1,suspicious,ok,0,0,0,0,0,0,0,0,0,0,STEP_UP_AUTH,1
+case_02,"validation case, no context signals",0.015275427,1,suspicious,ok,0,0,0,0,0,0,0,0,0,0,STEP_UP_AUTH,1
+case_03,"validation case, no context signals",0.22443191,1,high_risk,ok,1,1,0,0,0,0,0,1,0,1,HOLD,1
+case_04,"validation case, no context signals",0.47950048,1,high_risk,ok,1,1,0,0,0,0,0,1,0,1,HOLD,1
+case_05,"validation case, no context signals",0.01613098,1,suspicious,ok,0,0,0,0,0,0,0,0,0,0,STEP_UP_AUTH,1
+case_06,"validation case, no context signals",0.88395317,1,high_risk,ok,1,0,1,0,0,0,0,1,0,1,HOLD,1
+case_07,"validation case, no context signals",0.03273077,1,suspicious,ok,0,0,0,0,0,0,0,0,0,0,STEP_UP_AUTH,1
+case_08,"validation case, no context signals",0.00026102988,0,genuine,ok,0,0,0,0,0,0,0,0,0,0,ALLOW,0
+case_09,"validation case, no context signals",0.87797002,1,high_risk,ok,1,1,1,0,0,0,0,1,0,1,HOLD,1
+case_10,"validation case, no context signals",0.3473724,1,high_risk,ok,1,0,0,0,0,0,0,1,0,1,HOLD,1
+case_11,"validation case, no context signals",1.1907627e-06,0,genuine,ok,0,0,0,0,0,0,0,0,0,0,ALLOW,0
+case_12,"validation case, no context signals",9.9484658e-07,0,genuine,ok,0,0,0,0,0,0,0,0,0,0,ALLOW,0
+case_13,"validation case, no context signals",4.271971e-07,0,genuine,ok,0,0,0,0,0,0,0,0,0,0,ALLOW,0
+case_14,"validation case, no context signals",2.2552402e-05,0,genuine,ok,0,0,0,0,0,0,0,0,0,0,ALLOW,0
+case_15,"validation case, no context signals",1.6519504e-06,0,genuine,ok,0,0,0,0,0,0,0,0,0,0,ALLOW,0
+case_16,"validation case, no context signals",2.4110444e-06,0,genuine,ok,0,0,0,0,0,0,0,0,0,0,ALLOW,0
+case_17,"validation case, no context signals",6.8321976e-05,0,genuine,ok,0,0,0,0,0,0,0,0,0,0,ALLOW,0
+case_18,"validation case, no context signals",2.6990772e-06,0,genuine,ok,0,0,0,0,0,0,0,0,0,0,ALLOW,0
+case_19,"validation case, no context signals",4.156613e-05,0,genuine,ok,0,0,0,0,0,0,0,0,0,0,ALLOW,0
+case_20,"validation case, no context signals",9.6489793e-07,0,genuine,ok,0,0,0,0,0,0,0,0,0,0,ALLOW,0
+case_21,"validation case, no context signals",0.019669604,1,suspicious,ok,0,0,0,0,0,0,0,0,0,0,STEP_UP_AUTH,1
+case_22,"validation case, no context signals",0.012538755,1,suspicious,ok,0,0,0,0,0,0,0,0,0,0,STEP_UP_AUTH,1
+case_23,"validation case, no context signals",0.018136139,1,suspicious,ok,0,1,0,0,0,0,0,0,0,1,STEP_UP_AUTH,1
+case_24,"validation case, no context signals",0.45410397,1,high_risk,ok,1,1,0,0,0,0,0,1,0,1,HOLD,1
+case_25,"validation case, no context signals",0.0095026356,1,suspicious,ok,0,0,0,0,0,0,0,0,0,0,STEP_UP_AUTH,1
+s01,new device only,6.1030126e-06,0,genuine,ok,0,1,0,0,0,0,0,0,0,1,ALLOW,1
+s02,credential change only,1.4977212e-06,0,genuine,ok,0,0,1,0,0,0,0,0,0,1,ALLOW,1
+s03,first-time large payee,9.9484658e-07,0,genuine,ok,0,0,0,1,0,0,0,0,1,1,STEP_UP_AUTH,1
+s04,night velocity 40% of cap,9.9484658e-07,0,genuine,ok,0,0,0,0,1,0,0,0,1,1,STEP_UP_AUTH,1
+s05,outflow 90m vs balance 80m,8.7280912e-07,0,genuine,ok,0,0,0,0,0,1,0,0,1,1,STEP_UP_AUTH,1
+s06,open fraud alert,9.9484658e-07,0,genuine,ok,0,0,0,0,0,0,1,0,0,1,ALLOW,1
+s07,two disputes,9.9484658e-07,0,genuine,ok,0,0,0,0,0,0,1,0,0,1,ALLOW,1
+s08,new device + credential change + first-time payee,5.5489327e-05,0,genuine,ok,0,1,1,1,0,0,0,0,1,1,STEP_UP_AUTH,1
+s09,suspicious case plus new device,0.011287918,1,suspicious,ok,0,1,0,0,0,0,0,0,0,1,STEP_UP_AUTH,1
+s10,high_risk case plus alert,0.88395317,1,high_risk,ok,1,0,1,0,0,0,1,1,0,1,HOLD,1
+b01,boundary: night = exactly 30% of cap (no hit),9.9484658e-07,0,genuine,ok,0,0,0,0,0,0,0,0,0,0,ALLOW,0
+b02,boundary: night just above 30% of cap (hit),9.9484658e-07,0,genuine,ok,0,0,0,0,1,0,0,0,1,1,STEP_UP_AUTH,1
+b03,boundary: outflow exactly 50% of balance-before (no hit),8.7280912e-07,0,genuine,ok,0,0,0,0,0,0,0,0,0,0,ALLOW,0
+b04,boundary: outflow just above 50% (hit),8.7280912e-07,0,genuine,ok,0,0,0,0,0,1,0,0,1,1,STEP_UP_AUTH,1
+b05,boundary: balance-before exactly 50m (no hit),8.7280912e-07,0,genuine,ok,0,0,0,0,0,0,0,0,0,0,ALLOW,0
+b06,boundary: balance-before just above 50m (hit),8.7280912e-07,0,genuine,ok,0,0,0,0,0,1,0,0,1,1,STEP_UP_AUTH,1
+q01,70% of numeric features unavailable (quality low),1.5378398e-05,0,genuine,low,0,0,0,0,0,0,0,0,0,0,ALLOW,0
+q02,quality low plus new device and alert,7.3304735e-05,0,genuine,low,0,1,0,0,0,0,1,0,0,1,ALLOW,1
