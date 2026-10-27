@@ -2,15 +2,15 @@
 
 Fraud-gated, behaviour-based daily transfer limits: a fraud model and fraud gate, a risk scorecard and capacity forecast, a limit policy engine, a scoring API, and a simulation that compares static and dynamic limits. **All data is synthetic.** Proposal: `Dynamic-Customer-Limit-Proposal.docx` (section numbers such as 6.3 refer to it).
 
-**Start here:** [docs/PROGRESS_REPORT.md](docs/PROGRESS_REPORT.md) (status, results, gaps, SAS Viya readiness) and [docs/CHECKPOINT.md](docs/CHECKPOINT.md) (what to do next). The story and diagrams: [docs/STORYBOARD.md](docs/STORYBOARD.md), [docs/DIAGRAMS.md](docs/DIAGRAMS.md).
+**Start here:** [docs/PROGRESS_REPORT.md](docs/PROGRESS_REPORT.md) (status, results, gaps, SAS Viya readiness) and [docs/CHECKPOINT.md](docs/CHECKPOINT.md) (what to do next). The story and diagrams: [docs/STORYBOARD.md](docs/STORYBOARD.md), [docs/DIAGRAMS.md](docs/DIAGRAMS.md), [docs/DECISION_FLOWS.md](docs/DECISION_FLOWS.md) (decisions D1-D3 and their rule sets).
 
 ## Target architecture (decided 27 Oct 2026)
-**SAS Viya is the centre.** The middleware only knows the Viya gateway endpoint (MAS); the fraud model lives in Viya and is called from SAS Intelligent Decisioning (several decision flows); Viya posts actions to the channel and receives the customer's feedback. **PostgreSQL** (key: CIF) holds all data and is reachable from Viya and Python; transaction data (in and out) and channel enrichment (device, credential, location) arrive through **Kafka**. **Python is for model development only** (retrain, validate, export to Viya) and, in this repository, the reference implementation and test oracle for what must be rebuilt in Viya. Details: [STORYBOARD.md](docs/STORYBOARD.md) (frames 2.6, 3.1, 3.12), [DIAGRAMS.md](docs/DIAGRAMS.md), [INTELLIGENT_DECISIONING_BLUEPRINT.md](docs/INTELLIGENT_DECISIONING_BLUEPRINT.md).
+**SAS Viya is the centre.** The middleware only knows the Viya gateway endpoint (MAS); the fraud model lives in Viya and is called from SAS Intelligent Decisioning (several decision flows); Viya posts actions to the channel and receives the customer's feedback. **PostgreSQL** (key: CIF) holds all data and is reachable from Viya and Python; transaction data (in and out) and channel enrichment (device, credential, location) arrive through **Kafka**. **Python is for model development only** (retrain, validate, export to Viya) and, in this repository, the reference implementation and test oracle for what must be rebuilt in Viya. Three decisions are planned in Intelligent Decisioning (D1 fraud verdict, D2 nightly limit evaluation, D3 customer response) plus a Notification sub-decision. Details: [DECISION_FLOWS.md](docs/DECISION_FLOWS.md), [STORYBOARD.md](docs/STORYBOARD.md) (frames 2.6, 3.1, 3.12), [DIAGRAMS.md](docs/DIAGRAMS.md), [INTELLIGENT_DECISIONING_BLUEPRINT.md](docs/INTELLIGENT_DECISIONING_BLUEPRINT.md).
 
 ## Map
 | Folder / file | What it is |
 |---|---|
-| `docs/` | progress report, checkpoint, storyboard, diagrams, Intelligent Decisioning blueprint, feature and explainability reference |
+| `docs/` | progress report, checkpoint, storyboard, diagrams, decision flows (rule sets), Intelligent Decisioning blueprint, feature and explainability reference |
 | `notebooks/` | every analysis, documented, numbered in the order it was done (see below) |
 | `generator/` | synthetic data generator (`gen_v2.py`) and its validator |
 | `data/` | `dev/` (training and selection), `test/` and `test2/` (locked held-out sets, SHA-256 manifests, read-only), `sim/` (simulation customers) |

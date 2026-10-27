@@ -8,7 +8,7 @@
 | `fraudXgbMaskV11/score_fraudXgbMaskV11.py` | kode skor gaya MAS (`score(...)` dengan 63 input, `settings.pickle_path`) | **diuji lokal** dengan modul `settings` tiruan: selisih skor vs bundel maks 4,38e-08, pita dan kualitas identik 100% (600 baris, 15% nilai sengaja `None`) |
 | `fraudXgbMaskV11/inputVar.json`, `outputVar.json`, `ModelProperties.json`, `fileMetadata.json`, `requirements.json` | metadata Model Manager, dihasilkan `sasctl.pzmm` 1.12.0 | dibuat oleh pustaka resmi; **diterima Model Manager saat impor (27 Okt 2026)** |
 | `fraudXgbMaskV11.zip` | semua file di atas siap diunggah | - |
-| `scorecard/scorecard_score.sas` | scorecard WoE sebagai DATA step (poin per fitur + `risk_points`) | **diuji**: logika DATA step (di-parse ulang) identik dengan scorecard Python, selisih 0,000 poin pada 5.000 baris |
+| `scorecard/scorecard_score.sas` | scorecard WoE sebagai DATA step (poin per fitur + `risk_points`) | **diuji**: logika DATA step (di-parse ulang) identik dengan scorecard Python, selisih 0,000 poin pada 5.000 baris. **Catatan:** cocok untuk SAS Compute atau job batch; MAS (dan decision) hanya menjalankan DS2 atau Python, jadi untuk decision bungkus scorecard sebagai model Python |
 | `scorecard/scorecard.json`, `tier_cuts.json` | spesifikasi bin/poin dan batas tier | - |
 | `fraudXgbMaskV11/lab_validation_cases.csv` | 25 kasus input (5 dengan nilai kosong) beserta skor yang harus direproduksi di Viya | skor dihitung dari bundel v1.1 |
 | `verify_validation_cases.py` | pemeriksaan mandiri untuk dijalankan di lingkungan Python lab sebelum mendaftarkan model | lulus lokal (25 dari 25) |
@@ -36,7 +36,7 @@ Alternatif tanpa skrip: unggah `fraudXgbMaskV11.zip` lewat UI SAS Model Manager 
 3. **Konvensi MAS** (`import settings`, `settings.pickle_path`, docstring `Output:`) mengikuti pola kode skor yang dihasilkan pzmm; konvensi persisnya perlu dikonfirmasi pada versi Viya di lab.
 4. **Nilai kosong:** MAS harus meneruskan `None`/missing untuk fitur yang tidak ada; model dilatih untuk itu, tetapi cek bahwa MAS tidak memaksa 0.
 5. **Format lain:** PMML tidak disarankan (laporan komunitas menyebut masalah pada model ensemble pohon, dan dukungan versi PMML bergantung pada rilis Viya); ONNX masuk lewat jalur ASTORE (bukan impor langsung Model Manager) dan XGBoost dengan fitur kategorikal tidak tertangani konverter ONNX standar.
-6. **Bagian lain dari proposal tidak berupa model:** forecast kuantil dapat dikemas dengan cara yang sama (pickle + kode skor); **mesin kebijakan** (`limit/policy.py`) perlu diimplementasikan ulang sebagai rule set di SAS Intelligent Decisioning memakai tabel aturan di notebook 05 bagian 1.
+6. **Bagian lain dari proposal tidak berupa model:** forecast kuantil dapat dikemas dengan cara yang sama (pickle + kode skor); **scorecard** juga perlu dikemas sebagai model Python (MAS tidak menjalankan DATA step); **mesin kebijakan** (`limit/policy.py`) perlu diimplementasikan ulang sebagai rule set di SAS Intelligent Decisioning (D2, D3): aturan terinci di [docs/DECISION_FLOWS.md](../docs/DECISION_FLOWS.md).
 
 ## Hasil di lab Viya (27 Oktober 2026)
 * **Impor** `fraudXgbMaskV11.zip` lewat Model Manager berhasil (proyek `sashckton-gearup`): Python, XGBoost, Classification, 63 variabel input. Konvensi `import settings` dan `settings.pickle_path` berfungsi di versi lab.

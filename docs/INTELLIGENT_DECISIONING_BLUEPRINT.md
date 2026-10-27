@@ -1,6 +1,6 @@
 # Cetak biru SAS Intelligent Decisioning: flow "Fraud verdict"
 
-Disusun 27 Oktober 2026. Status: dirancang dan diuji dengan implementasi rujukan di Python. **F1 dilaporkan sudah dibangun di Intelligent Decisioning (27 Okt 2026); belum diverifikasi dengan berkas uji di bawah.** Nama menu di UI bisa berbeda antar versi Viya, jadi langkah di bagian 5 perlu dicek terhadap versi di lab.
+Disusun 27 Oktober 2026. Status: dirancang dan diuji dengan implementasi rujukan di Python. **D1 (dahulu F1) dilaporkan sudah dibangun di Intelligent Decisioning (27 Okt 2026); belum diverifikasi dengan berkas uji di bawah.** Dokumen ini membahas D1; D2, D3, dan sub-decision Notifikasi ada di [DECISION_FLOWS.md](DECISION_FLOWS.md). Nama menu di UI bisa berbeda antar versi Viya, jadi langkah di bagian 5 perlu dicek terhadap versi di lab.
 
 Berkas pendukung (semua di [sas_export/decisioning/](../sas_export/decisioning)):
 | Berkas | Fungsi |
@@ -12,7 +12,7 @@ Berkas pendukung (semua di [sas_export/decisioning/](../sas_export/decisioning))
 
 ## 1. Apa yang dicakup
 Satu keputusan real-time per transaksi: **memutuskan ALLOW, STEP_UP_AUTH, atau HOLD** dan apakah kenaikan limit harus diblokir. Ini padanan dari `POST /score` di backend (jalur 1), dibangun dengan model yang sudah dipublish ke MAS (`fraudxgbmaskv11`) ditambah dua rule set.
-**Tidak dicakup:** flow limit harian (scorecard, prakiraan kebutuhan, kebijakan tier). Itu flow kedua; scorecard sudah ada sebagai DATA step (`sas_export/scorecard/scorecard_score.sas`), tetapi prakiraan kebutuhan baru berupa model Python.
+**Tidak dicakup:** evaluasi limit harian (scorecard, prakiraan kebutuhan, kebijakan tier) dan respons nasabah. Itu **D2** dan **D3** ([DECISION_FLOWS.md](DECISION_FLOWS.md)). Catatan: scorecard dan prakiraan kebutuhan harus dibungkus sebagai model Python untuk dipakai di decision; `sas_export/scorecard/scorecard_score.sas` (DATA step) hanya cocok untuk SAS Compute atau job batch karena MAS tidak menjalankan DATA step.
 
 ## 2. Alur
 ```mermaid
@@ -89,7 +89,7 @@ Flow ini hanya mengerjakan bagian gate dan hold pada alur proposal. Bagian "scor
 
 ## 9. Pembaruan arsitektur (27 Oktober 2026)
 Keputusan terbaru: middleware hanya mengenal endpoint Viya, dan semua data ada di PostgreSQL (kunci CIF) yang dapat dibaca dari Viya. Dampaknya pada flow ini:
-- **Masukan ke F1 berubah.** Middleware tidak lagi mengirim 69 variabel. Ia mengirim **CIF dan transaksi yang diputuskan** (nominal, waktu, payee, kategori). Enam variabel konteks dan 63 fitur diambil dari Postgres (fitur harian dan agregat hari ini, profil, limit). Daftar variabel di `variables.csv` tetap berlaku sebagai **variabel internal decision** dan kolom tabel `features`.
-- **Transaksi yang sedang diputuskan** harus digabung dengan fitur hari berjalan sebelum node model (default: langkah penggabungan di F1; uji paritasnya terhadap `serving/store.py` wajib). Cara membaca Postgres dari dalam decision (node query atau lookup, atau code file) **[cek lab]**.
-- Berkas uji `id_test_input.csv` dan `id_test_expected.csv` tetap sah untuk menguji node model, rule set gate, dan rule set verdict (dengan 69 variabel sebagai masukan langsung). Untuk uji penuh F1, tambahkan kasus dengan CIF dan transaksi setelah tabel Postgres tersedia.
-- F1 bersifat **tanpa state**; penulisan log dan state dilakukan lewat Kafka atau job. Alur lengkap: [DIAGRAMS.md](DIAGRAMS.md) dan [STORYBOARD.md](STORYBOARD.md).
+- **Masukan ke D1 berubah.** Middleware tidak lagi mengirim 69 variabel. Ia mengirim **CIF dan transaksi yang diputuskan** (nominal, waktu, payee, kategori). Enam variabel konteks dan 63 fitur diambil dari Postgres (fitur harian dan agregat hari ini, profil, limit). Daftar variabel di `variables.csv` tetap berlaku sebagai **variabel internal decision** dan kolom tabel `features`.
+- **Transaksi yang sedang diputuskan** harus digabung dengan fitur hari berjalan sebelum node model (default: langkah penggabungan di D1; uji paritasnya terhadap `serving/store.py` wajib). Cara membaca Postgres dari dalam decision (node query atau lookup, atau code file) **[cek lab]**.
+- Berkas uji `id_test_input.csv` dan `id_test_expected.csv` tetap sah untuk menguji node model, rule set gate, dan rule set verdict (dengan 69 variabel sebagai masukan langsung). Untuk uji penuh D1, tambahkan kasus dengan CIF dan transaksi setelah tabel Postgres tersedia.
+- D1 bersifat **tanpa state**; penulisan log dan state dilakukan lewat Kafka atau job. Alur lengkap: [DIAGRAMS.md](DIAGRAMS.md) dan [STORYBOARD.md](STORYBOARD.md).

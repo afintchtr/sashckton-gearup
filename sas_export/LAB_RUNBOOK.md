@@ -64,7 +64,7 @@ Variabel yang tidak tersedia boleh dikirim kosong/`null`.
 * Gunakan modul MAS di atas sebagai simpul *Scoring*; keluaran `band` dan `quality` menjadi masukan aturan.
 * Aturan deterministik fraud gate dan kebijakan tier: lihat tabel aturan di `05_limit_policy_simulation.ipynb` bagian 1 dan `serving/gate.py` (keputusan akhir: hold hanya dari skor model; night velocity dan outflow/balance menjadi step-up).
 * `quality = low` berarti banyak fitur tidak tersedia: jatuh ke aturan deterministik, jangan memutuskan hanya dari skor.
-* Scorecard risiko: `sas_export/scorecard/scorecard_score.sas` (DATA step); batas tier di `tier_cuts.json`.
+* Scorecard risiko: `sas_export/scorecard/scorecard_score.sas` (DATA step, untuk SAS Compute atau job batch; di decision/MAS dipakai versi model Python, lihat [DECISION_FLOWS.md](../docs/DECISION_FLOWS.md) bagian 2); batas tier di `tier_cuts.json`.
 
 ## 7. Masalah yang mungkin muncul
 | Gejala | Kemungkinan penyebab | Tindakan |

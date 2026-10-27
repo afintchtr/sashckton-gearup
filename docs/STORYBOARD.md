@@ -90,19 +90,17 @@ Empat bab: [1 Masalah](#bab-1-masalah), [2 Apa yang dilakukan](#bab-2-apa-yang-d
 ### Frame 2.5 Alur keputusan harian
 **Visual:** Gambar 1 proposal (*Daily scoring run → Fraud gate hit? → Enough history? → Scorecard + capacity forecast → bandingkan tier → Offer +1 / Step down / Keep → Log*). Pseudo-logika proposal §7: gate kena → tidak naik (hold bila hit H); riwayat < 6 bulan → KEEP; selain itu `rec = MIN(batas skor, tier dari prakiraan × 1,2, tier sekarang + 1)`.
 
-### Frame 2.6 Delapan decision flow di Viya
-**Visual:** peta delapan kotak, tiap kotak dengan pemicunya.
-| Flow | Pemicu | Masukan utama | Keluaran |
+### Frame 2.6 Tiga decision di Viya, satu sub-decision, dan job
+**Visual:** tiga kotak besar, satu kotak bersama, dan satu jalur job. Rincian rule set tiap decision: [DECISION_FLOWS.md](DECISION_FLOWS.md).
+| Decision | Pemicu | Masukan utama | Keluaran |
 |---|---|---|---|
-| **F1 Fraud verdict** | middleware, per transaksi | CIF dan transaksi yang diputuskan; fitur dari Postgres | ALLOW / STEP_UP_AUTH / HOLD, band, kode aturan |
-| **F2 Limit harian** | job terjadwal 02.00 | fitur, skor scorecard, prakiraan, state limit | KEEP / OFFER / STEP_DOWN / HOLD, alasan, state baru |
-| **F3 Umpan balik step-up dan hold** | umpan balik dari channel | hasil verifikasi atau konfirmasi | lepas / blokir + kasus fraud / kedaluwarsa |
-| **F4 Tawaran dan self-cap** | umpan balik nasabah | terima tawaran atau batas baru | berlaku +24 jam / berlaku seketika |
-| **F5 Banding** | permintaan nasabah | alasan keberatan | tiket, hasil tinjauan, kunci tier 6 bulan |
-| **F6 Notifikasi** | keluaran flow lain | aksi dan alasan | isi pesan, kanal, waktu kirim (setelah 07.00 untuk tawaran) |
-| **F7 Pemantauan dan retrain** | job terjadwal | log keputusan, hasil matang | status, pemicu, peringatan |
-| F8 Evaluasi ulang karena sinyal (opsional) | kejadian enrichment | perangkat baru, ganti kredensial, alert | skor ulang |
-**Narasi:** Intelligent Decisioning adalah mesin keputusan; ia tidak menyimpan state atau menjalankan timer. Timer dan state dipegang job terjadwal Viya dan Postgres **[cek lab]**.
+| **D1 Fraud verdict** | middleware, per transaksi (real-time) | CIF dan transaksi yang diputuskan; fitur dari Postgres | ALLOW / STEP_UP_AUTH / HOLD, band, kode aturan |
+| **D2 Evaluasi limit** | job terjadwal 02.00 | fitur, skor scorecard, prakiraan kebutuhan, state limit | KEEP / OFFER / STEP_DOWN / HOLD / APPLY, alasan, state baru |
+| **D3 Respons nasabah** | umpan balik dari channel | hasil verifikasi atau konfirmasi, terima tawaran, self-cap, banding | lepas / blokir + kasus fraud / kedaluwarsa; tawaran diterima; self-cap berlaku seketika; tiket banding |
+| **Sub-decision Notifikasi** | dipanggil dari D1, D2, D3 | aksi atau verdict, alasan | isi pesan, kanal, waktu kirim (setelah 07.00 untuk tawaran) |
+| Job terjadwal (bukan decision) | jadwal | | fitur harian, panggil D2 pukul 02.00, batas waktu hold 24 jam, pemantauan dan retrain |
+**Padanan penamaan lama:** F1 = D1; F2 = D2; F3, F4, F5 = D3 (cabang menurut jenis kejadian); F6 = sub-decision Notifikasi; F7 = job pemantauan dan Model Manager; F8 (evaluasi ulang karena sinyal, opsional) = D1 dipanggil ulang.
+**Narasi:** Intelligent Decisioning adalah mesin keputusan tanpa state; state ada di Postgres dan penulisannya dilakukan pemanggil **[cek lab]**. **Evaluasi malam D2 sendiri yang menerapkan tawaran yang sudah diterima dan jatuh tempo (24 jam atau lebih)**, jadi tier tidak butuh timer terpisah; timer hanya dibutuhkan untuk batas waktu hold 24 jam.
 
 ### Frame 2.7 Pembagian peran
 | Pihak | Peran | Bukan perannya |
@@ -119,12 +117,12 @@ Empat bab: [1 Masalah](#bab-1-masalah), [2 Apa yang dilakukan](#bab-2-apa-yang-d
 | Data sintetis (scam, mule, ATO, varian stealth, hard negative) | **Ada** (DEV 50.000, TEST 20.000, TEST2 20.000 terkunci, SIM 10.000 nasabah) |
 | Model fraud v1.1 (63 fitur, tanpa gender/usia/wilayah) | **Ada**: PR-AUC 0,734, 7 dari 7 kriteria lulus |
 | Model di Viya: impor, uji 25 kasus, publish ke MAS (`fraudxgbmaskv11`) | **Ada**; REST belum diuji (token) |
-| Decision flow F1 di Intelligent Decisioning | **Dibangun di lab** (laporan pengguna); belum diuji dengan berkas uji kita |
+| Decision D1 (Fraud verdict) di Intelligent Decisioning | **Dibangun di lab** (laporan pengguna); belum diuji dengan berkas uji kita |
 | Laporan Visual Analytics 6 halaman | **Ada** |
-| Scorecard (DATA step) dan prakiraan kebutuhan (model Python) | Scorecard **kuning**: lemah (KS 14,8 vs target 35); prakiraan coverage 94%; belum di Viya |
+| Scorecard dan prakiraan kebutuhan | Scorecard **kuning**: lemah (KS 14,8 vs target 35); prakiraan coverage 94%. Spesifikasi di Python (scorecard juga ada sebagai DATA step untuk SAS Compute). **Keduanya belum di MAS dan harus dibungkus sebagai model Python**, karena MAS tidak menjalankan DATA step |
 | Logika gate, mesin limit, pemantauan | **Ada di Python** (spesifikasi dan oracle); harus diimplementasikan di Viya |
 | PostgreSQL, Kafka, job fitur harian, caslib ke Postgres | **Belum** |
-| Decision flow F2–F8, Workflow Manager, timer | **Belum** |
+| D2, D3, sub-decision Notifikasi, Workflow Manager, job terjadwal | **Belum** (rule set terinci di [DECISION_FLOWS.md](DECISION_FLOWS.md)) |
 | Model mule, business case, integrasi produksi | **Belum** |
 
 ### Frame 2.9 Temuan yang mengubah cerita proposal
@@ -153,7 +151,7 @@ Empat bab: [1 Masalah](#bab-1-masalah), [2 Apa yang dilakukan](#bab-2-apa-yang-d
 | `daily` | satu baris per CIF per hari (agregat) | agregator (SQL atau ESP) dan job penutupan hari |
 | `features` | 63 fitur per CIF | job Viya 01.30 |
 | `limit_state` | tier, tier sejak, jeda, tawaran, batas pilihan nasabah, kunci tier, jadwal berlaku | decision lewat job |
-| `tickets` | banding dan kasus fraud | Workflow Manager / F5 |
+| `tickets` | banding dan kasus fraud | Workflow Manager / D3 |
 | `decision_log` | masukan, skor, verdict, versi model, versi decision | decision (lewat Kafka) |
 **Kafka:** topik transaksi, enrichment channel, aksi (Viya → channel). Umpan balik nasabah masuk lewat middleware ke endpoint Viya.
 **Data yang dibutuhkan model dari sumber lain (sudah dianggap lengkap):** uang masuk dan saldo (core banking), perangkat dan kredensial (log channel), alert dan sengketa (sistem fraud dan CRM), batas harian (tabel limit). Kalau salah satu hilang, kemampuan model turun (PR-AUC DEV dibanding baseline: tanpa id payee 0,61×; tanpa arus masuk 0,78×; tanpa saldo 0,80×; tanpa perangkat 0,90×; hanya transfer keluar 0,51×).
@@ -171,36 +169,36 @@ Empat bab: [1 Masalah](#bab-1-masalah), [2 Apa yang dilakukan](#bab-2-apa-yang-d
 **Bukti:** high_risk = 0,046% trafik, presisi 54%, menangkap 78% fraud; suspicious = 0,42% trafik, presisi 1,2%, +16% fraud; 6,3% fraud lolos sebagai genuine.
 **Jujur:** suspicious cocok untuk step-up atau peninjauan, bukan blokir. Pengaruh fitur dan penjelasan model: [FEATURES_AND_EXPLAINABILITY.md](FEATURES_AND_EXPLAINABILITY.md).
 
-### Frame 3.5 F1 Fraud verdict (transaksi real-time)
+### Frame 3.5 D1 Fraud verdict (transaksi real-time)
 **Visual:** diagram 1 dan alur node: Start → baca fitur dan state → gabungkan transaksi → **node model** → **rule set Fraud gate** (7 aturan) → **rule set Verdict** → End.
-**Langkah:** middleware memanggil F1 dengan CIF dan transaksi yang diputuskan → F1 membaca satu baris fitur dari Postgres → model → gate → verdict dikembalikan ke middleware, log dipublikasikan ke Kafka. STEP_UP_AUTH dan HOLD memicu aksi ke channel.
-**Bukti:** tabel aturan setara dengan gate Python pada 3.000 baris acak; 43 kasus uji dengan hasil yang diharapkan tersedia ([INTELLIGENT_DECISIONING_BLUEPRINT.md](INTELLIGENT_DECISIONING_BLUEPRINT.md)).
-**Jujur:** (1) transaksi yang sedang diputuskan harus ikut dihitung dalam fitur hari berjalan; defaultnya F1 menerima transaksi itu dan menggabungkannya (uji paritas wajib). (2) `quality = low` sekarang menghasilkan ALLOW; usulan aturan tambahan: `quality = "low" AND verdict = "ALLOW"` → STEP_UP_AUTH (keputusan tim). (3) Alasan SHAP model **tidak** keluar dari modul MAS, sehingga pesan ke nasabah memakai kode aturan gate dan band.
+**Langkah:** middleware memanggil D1 dengan CIF dan transaksi yang diputuskan → D1 membaca satu baris fitur dari Postgres → model → gate → verdict dikembalikan ke middleware, log dipublikasikan ke Kafka. STEP_UP_AUTH dan HOLD memicu aksi ke channel.
+**Bukti:** tabel aturan setara dengan gate Python pada 3.000 baris acak; 43 kasus uji dengan hasil yang diharapkan tersedia ([INTELLIGENT_DECISIONING_BLUEPRINT.md](INTELLIGENT_DECISIONING_BLUEPRINT.md), [DECISION_FLOWS.md](DECISION_FLOWS.md) bagian 3).
+**Jujur:** (1) transaksi yang sedang diputuskan harus ikut dihitung dalam fitur hari berjalan; defaultnya D1 menerima transaksi itu dan menggabungkannya (uji paritas wajib). (2) `quality = low` sekarang menghasilkan ALLOW; usulan aturan V0: `quality = "low" AND verdict = "ALLOW"` → STEP_UP_AUTH (keputusan tim). (3) Alasan SHAP model **tidak** keluar dari modul MAS, sehingga pesan ke nasabah memakai kode aturan gate dan band.
 
-### Frame 3.6 F3 Siklus hold dan step-up
+### Frame 3.6 D3 Siklus hold dan step-up
 **Visual:** diagram 2 dan diagram 7.
-**Narasi:** setelah HOLD atau STEP_UP, nasabah memberi umpan balik lewat BRImo → middleware → F3:
-- **"Ini saya" atau verifikasi lolos:** skor ulang tanpa menaikkan limit, lalu transaksi dilepas.
+**Narasi:** setelah HOLD atau STEP_UP, nasabah memberi umpan balik lewat BRImo → middleware → D3, yang memanggil ulang model fraud dan gate:
+- **"Ini saya" atau verifikasi lolos:** bila skor ulang **tidak lagi high_risk**, transaksi dilepas dan hasil dicatat. Bila **masih high_risk**, transaksi tetap ditahan dan dikirim ke tim fraud **[asumsi]**: korban scam sering dikoordinasi penipu untuk menjawab "ini saya".
 - **"Bukan saya":** label awal dicatat, kasus dibuat di Workflow Manager untuk tim fraud (blokir kartu, eskalasi), transaksi diblokir.
-- **Tanpa respons:** setelah **24 jam** (mengikuti aturan hold 24 jam di proposal) transaksi dibatalkan; job timer memeriksa kedaluwarsa.
-**Jujur:** proposal hanya menyebut "konfirmasi di aplikasi atau telepon"; siklus ini adalah asumsi default dan harus disetujui tim fraud.
+- **Tanpa respons:** setelah **24 jam** (mengikuti aturan hold 24 jam di proposal) job terjadwal memanggil D3 untuk hold yang kedaluwarsa dan transaksi dibatalkan.
+**Jujur:** proposal hanya menyebut "konfirmasi di aplikasi atau telepon"; siklus ini adalah asumsi default dan harus disetujui tim fraud. Aturan rinci: [DECISION_FLOWS.md](DECISION_FLOWS.md) bagian 5.
 
-### Frame 3.7 F2 Limit harian (02.00)
+### Frame 3.7 D2 Evaluasi limit (02.00)
 **Visual:** diagram 4 dan diagram 8.
-**Narasi:** job terjadwal memilih nasabah layak lalu memanggil F2 per CIF. F2 menggabungkan **scorecard** (poin dan alasan), **prakiraan kebutuhan** 30 hari, **model fraud**, dan **gate**, lalu menerapkan kebijakan tier (jeda 7 hari, histeresis 14 evaluasi, tidak pernah di bawah tier dasar). Hasilnya aksi dan state baru yang ditulis ke Postgres; tabel limit dibaca core banking.
+**Narasi:** job terjadwal memilih nasabah layak lalu memanggil D2 per CIF. D2 menjalankan tiga model (**fraud**, **scorecard** untuk poin dan alasan, **prakiraan kebutuhan** 30 hari), rule set gate, lalu tiga rule set berurutan: **Tier targets** (batas atas dari skor dan tier kebutuhan dari prakiraan), **Lifecycle dan gate** (pembatalan, penerapan, dan kedaluwarsa tawaran; hold dan step-down oleh gate), dan **Rekomendasi** (tawaran, tinjauan tier 5, step-down). Aturan kebijakan: jeda 7 hari, histeresis 14 evaluasi, tidak pernah di bawah tier dasar. Hasilnya aksi dan state baru yang ditulis ke Postgres; tabel limit dibaca core banking.
 **Aksi:** `KEEP`, `OFFER_INCREASE`, `APPLY_INCREASE`, `STEP_DOWN`, `HOLD`, `CANCEL_OFFER`, `EXPIRE_OFFER`, `REVIEW_QUEUE`, `GATE_STEP_DOWN`.
-**Jujur:** scorecard sudah ada sebagai DATA step; **prakiraan kebutuhan baru berupa model Python** dan harus diekspor sebagai model kedua di MAS. Kegagalan batch: tier terakhir tetap berlaku, tidak ada perubahan otomatis tanpa skor yang lebih muda dari 48 jam (proposal §4.4).
+**Jujur:** scorecard dan prakiraan kebutuhan **harus dibungkus sebagai model Python** (paket `pzmm`) dan didaftarkan di Model Manager; DATA step scorecard hanya cocok untuk SAS Compute atau job batch. Kegagalan batch: tier terakhir tetap berlaku, tidak ada perubahan otomatis tanpa skor yang lebih muda dari 48 jam (proposal §4.4). Rule set terinci dan tujuh contoh hitungan: [DECISION_FLOWS.md](DECISION_FLOWS.md) bagian 4.
 
-### Frame 3.8 F4 dan F5: tawaran, self-cap, banding
+### Frame 3.8 D3: tawaran, self-cap, banding
 **Visual:** diagram 5.
-- **Tawaran:** nasabah menerima → F4 memeriksa ulang gate → tawaran berlaku **+24 jam**; job timer menerapkannya ke tabel limit dan memicu notifikasi. Tawaran ditolak atau kedaluwarsa (14 hari) → ditawarkan lagi setelah 30 hari.
+- **Tawaran:** nasabah menerima → D3 memeriksa ulang gate dan menyimpan tanggal penerimaan → **evaluasi malam berikutnya (D2) menerapkan tier baru** (24 jam atau lebih setelah diterima) ke tabel limit dan memicu notifikasi. Tawaran ditolak atau kedaluwarsa (14 hari) → ditawarkan lagi setelah 30 hari.
 - **Self-cap:** berlaku seketika; kenaikan kembali hanya lewat tawaran.
-- **Banding:** F5 membuat tugas di Workflow Manager (tinjauan manusia ≤ 2 hari kerja); petugas dapat mengunci tier 6 bulan atau menolak; hasil dikirim ke nasabah.
+- **Banding:** D3 membuat tugas di Workflow Manager (tinjauan manusia ≤ 2 hari kerja); petugas dapat mengunci tier 6 bulan atau menolak; hasil dikirim ke nasabah.
 **Pesan tawaran (contoh):** "Limit transfer harian Anda bisa naik ke Rp50 juta karena pendapatan stabil dan tidak ada sengketa. Terima? Berlaku 24 jam setelah diterima."
 
-### Frame 3.9 F6 Notifikasi dan F7 pemantauan
-- **F6:** memilih isi, kanal, dan waktu. Tawaran dikirim setelah 07.00; hold dan step-up segera. Pesan dikirim sebagai aksi ke Kafka lalu BRImo.
-- **F7:** job terjadwal membaca `decision_log` dan hasil yang matang, menghitung PSI skor dan fitur, KS, PR-AUC, migrasi tier, fairness, lalu menampilkannya di Visual Analytics. **Pemicu retrain:** PSI skor > 0,25, KS turun > 5 poin, ditambah (usulan kita) PR-AUC turun relatif > 20%, kenaikan nilai kosong > 5 poin, dan ≥ 5 fitur drift.
+### Frame 3.9 Sub-decision Notifikasi dan pemantauan
+- **Notifikasi:** dipanggil dari D1, D2, dan D3; memilih isi, kanal, dan waktu. Tawaran dikirim setelah 07.00; hold dan step-up segera. Pesan dikirim sebagai aksi ke Kafka lalu BRImo. Templat pesan: [DECISION_FLOWS.md](DECISION_FLOWS.md) bagian 6.
+- **Pemantauan (job terjadwal, bukan decision):** membaca `decision_log` dan hasil yang matang, menghitung PSI skor dan fitur, KS, PR-AUC, migrasi tier, fairness, lalu menampilkannya di Visual Analytics (dan performa di Model Manager). **Pemicu retrain:** PSI skor > 0,25, KS turun > 5 poin, ditambah (usulan kita) PR-AUC turun relatif > 20%, kenaikan nilai kosong > 5 poin, dan ≥ 5 fitur drift.
 
 ### Frame 3.10 Siklus hidup model: Python hanya untuk pengembangan
 **Visual:** diagram 6.
@@ -211,27 +209,27 @@ Empat bab: [1 Masalah](#bab-1-masalah), [2 Apa yang dilakukan](#bab-2-apa-yang-d
 ### Frame 3.11 Komponen Viya yang dimaksimalkan
 | Komponen Viya | Dipakai untuk | Status |
 |---|---|---|
-| **Intelligent Decisioning** | F1–F8 | F1 dibangun; sisanya rencana |
+| **Intelligent Decisioning** | D1, D2, D3 dan sub-decision Notifikasi | D1 dibangun; sisanya rencana |
 | **MAS** | endpoint gateway dan model real-time | model fraud ter-publish; endpoint belum diuji (token) |
 | **Model Manager** | registri, uji, persetujuan, champion/challenger, performa | impor, uji, publish selesai; persetujuan dan monitoring rencana |
-| **Job terjadwal** | fitur harian, F2 02.00, timer, F7 | rencana |
+| **Job terjadwal** | fitur harian, panggil D2 pukul 02.00, batas waktu hold 24 jam, pemantauan | rencana |
 | **Workflow Manager** | banding dan kasus fraud | rencana **[cek lab]** |
 | **Visual Analytics** | dashboard performa, band, ketahanan, fairness, pemantauan, model limit | 6 halaman selesai |
 | **CAS dan caslib ke Postgres** | batch dan analitik | rencana **[cek lab]** |
-| ESP, Model Studio, Visual Forecasting | tidak dipakai pada default (scorecard dan prakiraan diekspor dari Python) | opsional |
+| ESP, Model Studio, Visual Forecasting | tidak dipakai pada default (scorecard dan prakiraan diekspor dari Python sebagai model MAS) | opsional |
 
 ### Frame 3.12 Asumsi default (belum diverifikasi tim)
 | # | Hal | Asumsi default |
 |---|---|---|
 | 1 | Pemanggilan | sinkron di jalur otorisasi, < 150 ms; bila Viya gagal: lolos untuk nominal kecil, step-up untuk nominal besar (ambang ditentukan Risk) |
-| 2 | Siklus hold | ini saya → lepas dan skor ulang; bukan saya → blokir dan eskalasi ke tim fraud; tanpa respons → batal setelah 24 jam |
+| 2 | Siklus hold | ini saya dan skor ulang tidak lagi high_risk → lepas; ini saya tetapi masih high_risk → tetap ditahan, ke tim fraud; bukan saya → blokir dan eskalasi; tanpa respons → batal setelah 24 jam |
 | 3 | Fitur | harian dari job Viya ke Postgres; hari berjalan dari tabel agregat yang diperbarui dari Kafka; definisi bisnis di frame 3.3 |
-| 4 | Timer dan state | state di Postgres, timer lewat job terjadwal Viya |
+| 4 | Timer dan state | state di Postgres; tawaran yang jatuh tempo diterapkan oleh evaluasi malam D2; timer hanya untuk batas waktu hold 24 jam (job terjadwal memanggil D3) |
 | 5 | Limit ke core | Viya menulis tabel limit di Postgres yang dibaca core banking |
 | 6 | Label dan rilis | label dari hasil investigasi (jeda beberapa minggu); rilis lewat alur persetujuan di Model Manager |
 | 7 | Penjelasan | pesan dari kode gate dan band; alasan scorecard untuk limit |
 | 8 | Komponen Viya | Intelligent Decisioning, MAS, Model Manager, Visual Analytics, job terjadwal |
-| 9 | Scorecard dan prakiraan | diekspor dari Python (scorecard sebagai DATA step, prakiraan sebagai model kedua di MAS) |
+| 9 | Scorecard dan prakiraan | dibungkus sebagai model Python (paket `pzmm`) dan didaftarkan di Model Manager sebagai model kedua dan ketiga di MAS; DATA step scorecard hanya untuk SAS Compute |
 | 10 | Tinjauan banding | Workflow Manager |
 | 11 | KPI | angka simulasi, ditandai sintetis, sampai angka internal tersedia |
 | 12 | Privasi | akses menurut peran, retensi sesuai kebijakan bank |
@@ -277,7 +275,7 @@ Empat bab: [1 Masalah](#bab-1-masalah), [2 Apa yang dilakukan](#bab-2-apa-yang-d
 - Semua angka dari data sintetis dan simulasi open-loop; ambang harus dikalibrasi ulang dengan data bank.
 
 ### Frame 4.6 Dari demo ke pilot
-1. **Segera:** uji F1 di Viya dengan `id_test_input.csv`; uji REST ke MAS (token); cek Postgres/caslib, Workflow Manager, dan akses query dari decision; bangun F2–F7 bertahap; business case dengan angka internal BRI.
+1. **Segera:** uji D1 di Viya dengan `id_test_input.csv`; uji REST ke MAS (token); cek Postgres/caslib, Workflow Manager, dan akses query dari decision; bungkus scorecard dan prakiraan sebagai model MAS; bangun D2, D3, dan sub-decision Notifikasi bertahap; business case dengan angka internal BRI.
 2. **Sebelum pilot:** latih ulang dengan data bank (seleksi dan ambang diulang), uji tanpa `occupation`, telusuri ketimpangan usia dan wilayah, model mule, definisi fitur dikunci bersama tim data.
 3. **Pilot:** mode shadow, kemudian terbatas, dengan pemantauan di Visual Analytics dan pemicu retrain yang sudah diperluas.
 **Penutup (kalimat kunci proposal §10):** *limit statis gagal bagi nasabah dan tidak melindungi siapa pun. Dynamic Customer Limit memberi tiap nasabah ruang yang telah ia peroleh, memblokir kenaikan yang dibutuhkan penipu, dan menjelaskan setiap keputusan.*
@@ -289,11 +287,11 @@ Empat bab: [1 Masalah](#bab-1-masalah), [2 Apa yang dilakukan](#bab-2-apa-yang-d
 |---|---|
 | 1.1–1.5 | proposal §1, §2, §3 |
 | 2.1–2.5 | proposal §1, §4, §6.3, §7 |
-| 2.6–2.8 | keputusan arsitektur 27 Okt 2026; PROGRESS_REPORT §1–2 |
+| 2.6–2.8 | keputusan arsitektur 27 Okt 2026; [DECISION_FLOWS.md](DECISION_FLOWS.md); PROGRESS_REPORT §1–2 |
 | 2.9 | PROGRESS_REPORT §4 |
 | 3.1–3.3 | [DIAGRAMS.md](DIAGRAMS.md); `serving/store.py`, `serving/rolling.py` (spesifikasi dan oracle) |
 | 3.4 | `bundle/fraud_xgb_mask_v1_1`, [FEATURES_AND_EXPLAINABILITY.md](FEATURES_AND_EXPLAINABILITY.md) |
 | 3.5 | [INTELLIGENT_DECISIONING_BLUEPRINT.md](INTELLIGENT_DECISIONING_BLUEPRINT.md), `sas_export/decisioning/` |
-| 3.6–3.9 | `serving/gate.py`, `serving/limit_service.py`, `limit/policy.py`, `monitoring/monitor.py` (spesifikasi) |
+| 3.5–3.9 | [DECISION_FLOWS.md](DECISION_FLOWS.md) (rule set terinci); `serving/gate.py`, `serving/limit_service.py`, `limit/policy.py`, `monitoring/monitor.py` (spesifikasi) |
 | 3.10 | `sas_export/LAB_RUNBOOK.md` dan hasil di Viya lab |
 | 4.1–4.5 | PROGRESS_REPORT §3.1, §3.3, §3.4 |
