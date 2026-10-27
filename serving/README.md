@@ -1,4 +1,6 @@
 # Fraud-gate scoring service (stand-in for SAS MAS REST, proposal section 8)
+
+> **Status (27 Oct 2026): prototype, reference implementation and test oracle.** The target architecture puts the runtime in **SAS Viya** (middleware -> Viya gateway endpoint -> Intelligent Decisioning flows; model in Viya; PostgreSQL keyed by CIF; Kafka for transactions, channel enrichment and actions; Python for model development only). This service is **not** the production runtime. It remains useful as (1) the **specification** of the rolling features, fraud gate and limit engine that must be rebuilt in Viya, (2) the **oracle** for parity tests (`test_rolling_parity.py`: 68/68 features identical to training; `sas_export/decisioning/decision_flow_ref.py --check-backend`: gate rule tables identical on 3,000 random rows), and (3) a runnable demo. See `docs/STORYBOARD.md` (frames 2.6, 3.1-3.3) and `docs/DIAGRAMS.md`. The Dockerfile and Kubernetes manifest under `deploy/` are prototype-only and were never built or applied.
 Serves model **v1.1** (63 features, no gender / age / region / tenure quirk) from `bundle/fraud_xgb_mask_v1_1`. Override with `BUNDLE_DIR`.
 
 ## How the rolling features work

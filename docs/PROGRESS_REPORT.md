@@ -1,5 +1,15 @@
 # Laporan Progres: Dynamic Customer Limit (SAS Hackathon 2026, Team Gear Up)
-Per 23 Oktober 2026. Semua data **sintetis**. Dokumen ini menjawab: seberapa jauh kita dari proposal, apa yang masih kurang, mana yang layak dikejar atau diabaikan, dan apakah model siap diekspor ke SAS Viya lab. Peta folder ada di [README.md](../README.md).
+Per 23 Oktober 2026 (diperbarui 27 Oktober 2026, lihat bagian 0). Semua data **sintetis**. Dokumen ini menjawab: seberapa jauh kita dari proposal, apa yang masih kurang, mana yang layak dikejar atau diabaikan, dan apakah model siap diekspor ke SAS Viya lab. Peta folder ada di [README.md](../README.md).
+
+---
+
+## 0. Pembaruan 27 Oktober 2026
+Bagian 1–9 di bawah ditulis per 23 Oktober. Yang berubah sejak itu:
+* **SAS Viya lab:** paket `fraudXgbMaskV11.zip` diimpor ke Model Manager (proyek `sashckton-gearup`), uji tabel 25 kasus cocok, dipublish ke MAS (modul `fraudxgbmaskv11`). Satu bug ditemukan dan diperbaiki: Model Manager memanggil `score()` dengan kolom utuh (Series), sehingga kode skor kini menerima nilai tunggal maupun Series. Panggilan REST belum diuji (menunggu token OAuth). Laporan Visual Analytics 6 halaman selesai. Decision flow F1 dilaporkan sudah dibangun di Intelligent Decisioning (belum diverifikasi dengan berkas uji kita).
+* **Arsitektur target diputuskan:** SAS Viya sebagai pusat (middleware hanya mengenal endpoint gateway Viya; model dan decision flow di Viya; Viya mengirim aksi ke channel dan menerima umpan balik); **PostgreSQL** (kunci CIF) menyimpan semua data dan dapat diakses dari Viya dan Python; transaksi lengkap dan enrichment channel lewat **Kafka**; **Python hanya untuk pengembangan model**. Delapan decision flow (F1–F8) dan 12 asumsi default: [STORYBOARD.md](STORYBOARD.md), [DIAGRAMS.md](DIAGRAMS.md).
+* **Konsekuensi untuk laporan ini:** `serving/` (FastAPI, SQLite, limit service) menjadi **prototipe, spesifikasi, dan oracle uji paritas**, bukan runtime; `deploy/` tidak lagi bagian arsitektur. Logika fitur bergulir, gate, mesin limit, dan pemantauan harus diimplementasikan ulang di Viya dan dibuktikan setara. Pernyataan "belum dicoba di Viya" di bagian bawah sudah diperbarui; yang tetap berlaku: solusi **belum** berjalan end-to-end di Viya.
+* **Dokumen dan artefak baru:** [FEATURES_AND_EXPLAINABILITY.md](FEATURES_AND_EXPLAINABILITY.md), [INTELLIGENT_DECISIONING_BLUEPRINT.md](INTELLIGENT_DECISIONING_BLUEPRINT.md) (+ `sas_export/decisioning/`: variabel, rule set, 43 kasus uji, implementasi rujukan setara `gate.py` pada 3.000 baris acak), `sas_export/va_data/`, `sas_export/lab_evidence/` (sampel latih 20 MB).
+* **Temuan baru:** (1) `occupation` peringkat 5 pengaruh model dan kemungkinan artefak generator; (2) `quality = low` menghasilkan ALLOW (usulan: STEP_UP_AUTH); (3) fitur hari berjalan (17 fitur) menyumbang ±41% pengaruh dan harus segar; (4) sensitivitas terhadap sumber data (PR-AUC DEV dibanding baseline): tanpa id payee 0,61×, tanpa arus masuk 0,78×, tanpa saldo 0,80×, hanya transfer keluar 0,51×; (5) gender, usia, wilayah, tenure, hist_days hanya ±2,7% pengaruh pada v1.
 
 ---
 
@@ -17,9 +27,9 @@ Per 23 Oktober 2026. Semua data **sintetis**. Dokumen ini menjawab: seberapa jau
 | Service REST + limit service + log keputusan | Ya | paritas, replay, dan lifecycle penawaran-terima-berlaku-banding lolos |
 | Bukti dampak statis vs dinamis | Ya | simulasi 10.000 nasabah x 364 hari + 11 uji sensitivitas |
 | Pemantauan PSI, KS, migrasi tier, fairness, reason code | Ya | uji alarm palsu dan uji deteksi |
-| Paket impor SAS Viya (siap lab) | Disiapkan, **belum dicoba di Viya** | kode skor identik dengan bundel; 25 kasus validasi; preflight |
+| Paket impor SAS Viya | **Diimpor, diuji (25 kasus), dipublish ke MAS di lab (27 Okt)**; REST belum | kode skor identik dengan bundel; bug batch (Series) diperbaiki; preflight |
 | Mock UI journey nasabah (Inggris) | Ya | lima journey interaktif dari respons nyata layanan |
-| Integrasi Viya sungguhan, feature store produksi, dashboard produksi, business case | Belum | lihat bagian 6 |
+| Decision flow lengkap di Viya (F2–F8), feature store produksi (Postgres, Kafka), business case | Belum (F1 dibangun di lab; Visual Analytics 6 halaman selesai) | lihat bagian 0 dan 6 |
 
 **Tiga angka yang paling layak dipajang** (simulasi 10.000 nasabah, 364 hari, model v1.1):
 * transaksi sah yang ditolak karena limit **turun 32%** (2.327 -> 1.574 per 1.000 nasabah per tahun); nasabah terdampak 32,0% -> 25,2%; volume sah terselesaikan **+5,5%**;
@@ -148,7 +158,7 @@ OK = selesai dan teruji | SEBAGIAN | CELAH
 | 6.3 Fraud gate | SEBAGIAN | 7 dari 8 aturan (night velocity dan outflow/balance menjadi step-up); model mule-account khusus belum |
 | 6.4 Tata kelola | SEBAGIAN | champion/challenger, model card, **tanpa atribut terproteksi**, fairness model dan tier, PSI/KS/migrasi/reason code ada. Belum: retrain terjadwal, registry Model Manager |
 | 7 Decision flow | OK | seluruh pseudo-logika di `limit/policy.py` |
-| 8 Arsitektur | SEBAGIAN | feature store (SQLite), scoring (FastAPI sebagai pengganti MAS), limit service, notifikasi (pesan). Belum: ESP, Model Manager, Intelligent Decisioning, Visual Analytics |
+| 8 Arsitektur | SEBAGIAN | **target diputuskan 27 Okt: Viya sebagai pusat, Postgres (CIF), Kafka, Python hanya pengembangan** (bagian 0). Di lab: Model Manager, MAS, Visual Analytics dipakai; F1 dibangun. Prototipe Python (SQLite, FastAPI) kini spesifikasi dan oracle. Belum: Postgres, Kafka, job fitur, F2–F8, ESP |
 | 9 Journey nasabah | SEBAGIAN | mock UI lima journey (tawaran, hold, turun, atur sendiri, transparansi); belum UI nyata |
 | 2.3/10 Bukti dampak | SEBAGIAN | simulasi sintetis ada; angka internal bank tidak mungkin dari data sintetis |
 
@@ -160,21 +170,21 @@ OK = selesai dan teruji | SEBAGIAN | CELAH
 | G1 | Model fraud tanpa atribut terproteksi | 0,5 | **SELESAI** (v1.1, TEST2 lulus) |
 | G2 | Fairness hasil tier per kelompok | 0,25 | **SELESAI**; temuan usia 0,60 dan wilayah 0,76 perlu ditelusuri (G15) |
 | G3 | Pemantauan ringan | 0,5 | **SELESAI** (notebook 08 + modul); tambah pemicu baru ke runbook operasi |
-| G4 | Impor ke SAS Viya lab | 1-2 (di lab) | **Paket siap** (preflight lulus, 25 kasus validasi, runbook); impor menunggu akses lab |
+| G4 | Impor ke SAS Viya lab | 1-2 (di lab) | **SELESAI (27 Okt)**: diimpor, 25 kasus cocok, dipublish ke MAS; REST menunggu token |
 | G5 | Model mule-account khusus | 0,75 | Opsional; mule tercakup di skor fraud |
 | G6 | Mock UI journey nasabah | 1 | **SELESAI** |
 | G7 | Scorecard KS 35 / Gini 0,45 | tak mungkin | **Abaikan** di data sintetis; uji ulang di data bank |
 | G8 | Simulasi closed-loop | 1,5 | Abaikan; sebut sebagai keterbatasan |
 | G9 | Model intraday | 2 | Abaikan; data tidak punya detail intraday |
-| G10 | Feature store produksi, mode shadow | 2,5 | Abaikan; hanya untuk pilot nyata |
-| G11 | ESP, Visual Analytics, node Scorecard Model Studio | 3 | Abaikan; cukup di peta jalan |
+| G10 | Feature store produksi, mode shadow | 2,5 | **Berubah:** Postgres + Kafka + job fitur kini bagian arsitektur target (STORYBOARD frame 3.2); mode shadow tetap untuk pilot |
+| G11 | ESP, Visual Analytics, node Scorecard Model Studio | 3 | **Visual Analytics SELESAI** (6 halaman); ESP dan Model Studio opsional (default: scorecard dan prakiraan diekspor dari Python) |
 | G12 | Angka internal bank untuk §2.3 | di luar kendali | Placeholder jelas |
 | G13 | Aturan hold bising -> step-up | 0,25 | **SELESAI** |
 | G14 | Hysteresis lebih panjang | 0,1 | **SELESAI** |
 | G15 | Telusuri rasio kenaikan tier antar usia (0,60) dan wilayah (0,76) | 0,25 | **Kejar** sebelum pilot |
 | G16 | **Business case** (masalah, solusi, dampak, biaya, risiko, peta jalan) | 0,5 | **Belum**; menunggu konfirmasi format dan angka internal |
 
-Urutan yang saya sarankan: **G16**, lalu **G4** bila lab tersedia, lalu G15 dan G5 bila waktu ada.
+Urutan yang disarankan (per 27 Okt): uji F1 di Viya, cek kemampuan lab, REST (token), **G16**, F2 dan decision flow lain, lalu G15 dan G5 (lihat [CHECKPOINT.md](CHECKPOINT.md)).
 
 ---
 
@@ -183,7 +193,7 @@ Urutan yang saya sarankan: **G16**, lalu **G4** bila lab tersedia, lalu G15 dan 
 
 **Scorecard:** OK sebagai komponen yang bisa dijelaskan, tetapi lemah. Jangan mengklaim memenuhi target KS/Gini proposal. **Forecast kuantil: OK** (coverage 94%).
 
-**Ekspor ke SAS Viya lab: paket siap dan diuji lokal, belum dicoba di Viya.** Jalur resmi: `sasctl.pzmm` (pickle + metadata + kode skor) ke Model Manager, lalu publish ke MAS.
+**Ekspor ke SAS Viya lab: selesai (27 Okt 2026): diimpor, diuji 25 kasus, dipublish ke MAS; REST menunggu token.** Jalur resmi: `sasctl.pzmm` (pickle + metadata + kode skor) ke Model Manager, lalu publish ke MAS.
 
 | Hal | Status |
 |---|---|
@@ -196,7 +206,7 @@ Urutan yang saya sarankan: **G16**, lalu **G4** bila lab tersedia, lalu G15 dan 
 | PMML | tidak disarankan (laporan komunitas: masalah pada ensemble pohon) |
 | ONNX | hanya lewat jalur ASTORE; XGBoost dengan fitur kategorikal tidak tertangani konverter standar |
 
-Risiko terbesar di lab: versi `xgboost`/`pandas`/`numpy` di lingkungan Python MAS (lihat `requirements.json`), penanganan kategori (kode skor sudah dibuat khusus), dan konvensi MAS. Langkah dan tabel masalah ada di `sas_export/LAB_RUNBOOK.md`.
+Risiko terbesar di lab: versi `xgboost`/`pandas`/`numpy` di lingkungan Python MAS (lihat `requirements.json`), penanganan kategori (kode skor sudah dibuat khusus), dan konvensi MAS. Langkah dan tabel masalah ada di `sas_export/LAB_RUNBOOK.md`. **Hasil di lab:** impor berhasil; skor cocok; konvensi `settings.pickle_path` berfungsi; satu bug (Series pada jalur batch) ditemukan dan diperbaiki; peringatan versi XGBoost saat memuat pickle (hanya peringatan, skor tetap cocok).
 
 ---
 
@@ -204,13 +214,13 @@ Risiko terbesar di lab: versi `xgboost`/`pandas`/`numpy` di lingkungan Python MA
 * Bahwa limit dinamis **menurunkan fraud**. Yang menurunkan fraud adalah fraud gate.
 * Bahwa angka-angka ini adalah prakiraan finansial (simulasi open-loop, data sintetis, penerimaan penawaran 70%, keefektifan hold 50%).
 * Bahwa scorecard memenuhi KS >= 35 / Gini >= 0,45.
-* Bahwa model sudah berjalan di SAS Viya.
+* Bahwa **solusi** sudah berjalan di SAS Viya. Yang berjalan di Viya baru model (diimpor, diuji, dipublish) dan laporan Visual Analytics; decision flow F2–F8, data (Postgres, Kafka), dan panggilan REST belum.
 
 Keterbatasan teknis: model dilatih pada agregat akhir hari (skor di tengah hari konservatif); SQLite hanya cocok untuk satu replika; Docker image dan manifest k8s belum pernah di-build/apply; `kubectl --dry-run=client` pernah menghubungi cluster dari kubeconfig (hanya baca, ditolak, tidak ada perubahan), jadi jangan dipakai untuk validasi manifest.
 
 ---
 
-## 9. Runbook demo
+## 9. Runbook demo (prototipe Python; runtime target di Viya)
 ```bash
 cd <project-root>
 .venv/bin/python serving/seed_store.py                                      # isi feature store demo (data DEV)

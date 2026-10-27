@@ -2,24 +2,27 @@
 
 Fraud-gated, behaviour-based daily transfer limits: a fraud model and fraud gate, a risk scorecard and capacity forecast, a limit policy engine, a scoring API, and a simulation that compares static and dynamic limits. **All data is synthetic.** Proposal: `Dynamic-Customer-Limit-Proposal.docx` (section numbers such as 6.3 refer to it).
 
-**Start here:** [docs/PROGRESS_REPORT.md](docs/PROGRESS_REPORT.md) (status, results, gaps, SAS Viya readiness) and [docs/CHECKPOINT.md](docs/CHECKPOINT.md) (what to do next).
+**Start here:** [docs/PROGRESS_REPORT.md](docs/PROGRESS_REPORT.md) (status, results, gaps, SAS Viya readiness) and [docs/CHECKPOINT.md](docs/CHECKPOINT.md) (what to do next). The story and diagrams: [docs/STORYBOARD.md](docs/STORYBOARD.md), [docs/DIAGRAMS.md](docs/DIAGRAMS.md).
+
+## Target architecture (decided 27 Oct 2026)
+**SAS Viya is the centre.** The middleware only knows the Viya gateway endpoint (MAS); the fraud model lives in Viya and is called from SAS Intelligent Decisioning (several decision flows); Viya posts actions to the channel and receives the customer's feedback. **PostgreSQL** (key: CIF) holds all data and is reachable from Viya and Python; transaction data (in and out) and channel enrichment (device, credential, location) arrive through **Kafka**. **Python is for model development only** (retrain, validate, export to Viya) and, in this repository, the reference implementation and test oracle for what must be rebuilt in Viya. Details: [STORYBOARD.md](docs/STORYBOARD.md) (frames 2.6, 3.1, 3.12), [DIAGRAMS.md](docs/DIAGRAMS.md), [INTELLIGENT_DECISIONING_BLUEPRINT.md](docs/INTELLIGENT_DECISIONING_BLUEPRINT.md).
 
 ## Map
 | Folder / file | What it is |
 |---|---|
-| `docs/` | progress report and checkpoint |
+| `docs/` | progress report, checkpoint, storyboard, diagrams, Intelligent Decisioning blueprint, feature and explainability reference |
 | `notebooks/` | every analysis, documented, numbered in the order it was done (see below) |
 | `generator/` | synthetic data generator (`gen_v2.py`) and its validator |
 | `data/` | `dev/` (training and selection), `test/` and `test2/` (locked held-out sets, SHA-256 manifests, read-only), `sim/` (simulation customers) |
 | `splits.py`, `build_features.py` | the single source of truth for splits and the training feature builder (kept at the root because every notebook imports them) |
 | `limit/` | scorecard, capacity forecast, policy engine, simulation (+ `artifacts/`: fitted scorecard and forecast) |
-| `serving/` | scoring API: rolling-feature store, fraud gate, limit service, demo, tests |
+| `serving/` | prototype scoring API (rolling-feature store, fraud gate, limit service, demo, tests). In the target architecture the runtime is SAS Viya; this code is the **reference implementation and parity oracle** |
 | `monitoring/` | PSI / KS / fairness / tier-migration monitor and the training reference distribution |
 | `bundle/` | exported fraud models: `fraud_xgb_mask_v1_1` (**active**), `fraud_xgb_mask_v1` (comparison) |
 | `models/`, `artifacts/` | trained model files; results (test reports, selection, tuning, robustness) |
-| `sas_export/` | SAS Viya package: pickle, MAS score code, metadata, scorecard DATA step, validation cases, lab runbook |
+| `sas_export/` | SAS Viya package (pickle, MAS score code, metadata, scorecard DATA step, validation cases, lab runbook), `decisioning/` (Intelligent Decisioning variables, rule sets, test cases, reference implementation), `va_data/` (Visual Analytics tables), `lab_evidence/` (20 MB training sample and manifest) |
 | `mock_ui/` | interactive customer-journey mockup (English) |
-| `deploy/` | Dockerfile, Kubernetes manifest, score template (written, not yet built or applied) |
+| `deploy/` | Dockerfile, Kubernetes manifest, score template (prototype only, not part of the target architecture; never built or applied) |
 | `archive/` | superseded v1 data files and early exploration notebooks |
 | `.venv/` | Python environment (do not move: the Jupyter kernel points here) |
 

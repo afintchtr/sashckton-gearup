@@ -1,6 +1,6 @@
 # Cetak biru SAS Intelligent Decisioning: flow "Fraud verdict"
 
-Disusun 27 Oktober 2026. Status: **dirancang dan diuji dengan implementasi rujukan di Python; belum dibangun di Viya.** Nama menu di UI bisa berbeda antar versi Viya, jadi langkah di bagian 5 perlu dicek terhadap versi di lab.
+Disusun 27 Oktober 2026. Status: dirancang dan diuji dengan implementasi rujukan di Python. **F1 dilaporkan sudah dibangun di Intelligent Decisioning (27 Okt 2026); belum diverifikasi dengan berkas uji di bawah.** Nama menu di UI bisa berbeda antar versi Viya, jadi langkah di bagian 5 perlu dicek terhadap versi di lab.
 
 Berkas pendukung (semua di [sas_export/decisioning/](../sas_export/decisioning)):
 | Berkas | Fungsi |
